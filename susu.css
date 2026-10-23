@@ -47,3 +47,8 @@ br.clear{clear: both}
 .right{text-align: right}
 
 table.center{margin-left: auto; margin-right: auto}
+
+/* 2026-10-23: broken links are highlighted; the suspected new location is placed under them */
+.deadlink{background-color: #ffe08a; color: #800000}
+a.deadlink:link{color: #800000}
+.movedto{font-size: 90%; color: #006000; margin-left: 1em}
