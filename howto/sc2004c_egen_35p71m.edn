@@ -1,0 +1,758 @@
+(edif sc2004c_egen_35p71m
+  (edifVersion 2 0 0)
+  (edifLevel 0)
+  (keywordMap (keywordLevel 0))
+  (status
+    (written
+      (timeStamp 2004 1 17 0 38 12)
+      (program "VIEWlogic's edifneto" (version "8.8_1.1 (Mar 30 2003)"))))
+  (library SC2004C_EGEN_35P71M
+    (edifLevel 0)
+    (technology (numberDefinition (scale 1 (E 1 -12) (unit CAPACITANCE))))
+
+    (cell (rename VIRTEX_AND4_1 "AND4")
+      (cellType GENERIC)
+        (status (written
+         (timeStamp 2003 8 3 6 37 31)))
+      (userData VL_PLATFORM_CODE (string "K 17930067490 AND4")
+        (owner "Viewlogic_Systems"))
+      (userData LIBNAME
+        (string "VIRTEX")
+          (owner "Viewlogic_Systems"))
+      (view view_1
+        (viewType NETLIST)
+        (interface
+          (port I0
+            (direction INPUT))
+          (port I1
+            (direction INPUT))
+          (port I2
+            (direction INPUT))
+          (port I3
+            (direction INPUT))
+          (port O
+            (direction OUTPUT))
+          (property DEVICE (string "AND") (owner "Viewlogic_Systems"))
+          (property LEVEL (string "XILINX") (owner "Viewlogic_Systems"))
+          (property LIBVER (string "2.0.0") (owner "Viewlogic_Systems")))
+      ))
+
+    (cell (rename VIRTEX_AND3_2 "AND3")
+      (cellType GENERIC)
+        (status (written
+         (timeStamp 2003 8 3 6 37 31)))
+      (userData VL_PLATFORM_CODE (string "K 337378367200 AND3")
+        (owner "Viewlogic_Systems"))
+      (userData LIBNAME
+        (string "VIRTEX")
+          (owner "Viewlogic_Systems"))
+      (view view_1
+        (viewType NETLIST)
+        (interface
+          (port I0
+            (direction INPUT))
+          (port I1
+            (direction INPUT))
+          (port I2
+            (direction INPUT))
+          (port O
+            (direction OUTPUT))
+          (property DEVICE (string "AND") (owner "Viewlogic_Systems"))
+          (property LEVEL (string "XILINX") (owner "Viewlogic_Systems"))
+          (property LIBVER (string "2.0.0") (owner "Viewlogic_Systems")))
+      ))
+
+    (cell (rename VIRTEX_AND2_3 "AND2")
+      (cellType GENERIC)
+        (status (written
+         (timeStamp 2003 8 3 6 37 31)))
+      (userData VL_PLATFORM_CODE (string "K 251385918200 AND2")
+        (owner "Viewlogic_Systems"))
+      (userData LIBNAME
+        (string "VIRTEX")
+          (owner "Viewlogic_Systems"))
+      (view view_1
+        (viewType NETLIST)
+        (interface
+          (port I0
+            (direction INPUT))
+          (port I1
+            (direction INPUT))
+          (port O
+            (direction OUTPUT))
+          (property DEVICE (string "AND") (owner "Viewlogic_Systems"))
+          (property LEVEL (string "XILINX") (owner "Viewlogic_Systems"))
+          (property LIBVER (string "2.0.0") (owner "Viewlogic_Systems")))
+      ))
+
+    (cell (rename VIRTEX_XOR2_4 "XOR2")
+      (cellType GENERIC)
+        (status (written
+         (timeStamp 2003 8 3 6 37 31)))
+      (userData VL_PLATFORM_CODE (string "K 22968322990 XOR2")
+        (owner "Viewlogic_Systems"))
+      (userData LIBNAME
+        (string "VIRTEX")
+          (owner "Viewlogic_Systems"))
+      (view view_1
+        (viewType NETLIST)
+        (interface
+          (port I0
+            (direction INPUT))
+          (port I1
+            (direction INPUT))
+          (port O
+            (direction OUTPUT))
+          (property DEVICE (string "XOR") (owner "Viewlogic_Systems"))
+          (property LEVEL (string "XILINX") (owner "Viewlogic_Systems"))
+          (property LIBVER (string "2.0.0") (owner "Viewlogic_Systems")))
+      ))
+
+    (cell (rename VIRTEX_FDRE_5 "FDRE")
+      (cellType GENERIC)
+        (status (written
+         (timeStamp 2003 8 3 6 37 31)))
+      (userData VL_PLATFORM_CODE (string "K 276453102400 FDRE")
+        (owner "Viewlogic_Systems"))
+      (userData LIBNAME
+        (string "VIRTEX")
+          (owner "Viewlogic_Systems"))
+      (view view_1
+        (viewType NETLIST)
+        (interface
+          (port C
+            (direction INPUT))
+          (port CE
+            (direction INPUT))
+          (port D
+            (direction INPUT))
+          (port Q
+            (direction OUTPUT))
+          (port R
+            (direction INPUT))
+          (property INIT (string "R") (owner "Viewlogic_Systems"))
+          (property LEVEL (string "XILINX") (owner "Viewlogic_Systems"))
+          (property LIBVER (string "2.0.0") (owner "Viewlogic_Systems")))
+      ))
+
+    (cell (rename VIRTEX_OR2_6 "OR2")
+      (cellType GENERIC)
+        (status (written
+         (timeStamp 2003 8 3 6 37 31)))
+      (userData VL_PLATFORM_CODE (string "K 310014272500 OR2")
+        (owner "Viewlogic_Systems"))
+      (userData LIBNAME
+        (string "VIRTEX")
+          (owner "Viewlogic_Systems"))
+      (view view_1
+        (viewType NETLIST)
+        (interface
+          (port I0
+            (direction INPUT))
+          (port I1
+            (direction INPUT))
+          (port O
+            (direction OUTPUT))
+          (property DEVICE (string "OR") (owner "Viewlogic_Systems"))
+          (property LEVEL (string "XILINX") (owner "Viewlogic_Systems"))
+          (property LIBVER (string "2.0.0") (owner "Viewlogic_Systems")))
+      ))
+
+    (cell (rename VIRTEX_FTRSE_7 "FTRSE")
+      (cellType GENERIC)
+        (status (written
+         (timeStamp 2003 8 3 6 37 31)))
+      (userData VL_PLATFORM_CODE (string "K 309937126300 ftrse")
+        (owner "Viewlogic_Systems"))
+      (userData LIBNAME
+        (string "VIRTEX")
+          (owner "Viewlogic_Systems"))
+      (view view_1
+        (viewType NETLIST)
+        (interface
+          (port C
+            (direction INPUT))
+          (port CE
+            (direction INPUT))
+          (port Q
+            (direction OUTPUT))
+          (port R
+            (direction INPUT))
+          (port S
+            (direction INPUT))
+          (port T
+            (direction INPUT))
+          (property LEVEL (string "MXILINX") (owner "Viewlogic_Systems"))
+          (property LIBVER (string "2.0.0") (owner "Viewlogic_Systems")))
+        (contents
+          (instance (rename &_1I32_8 "$1I32")
+            (viewRef view_1 (cellRef VIRTEX_XOR2_4)))
+          (instance (rename &_1I35_9 "$1I35")
+            (viewRef view_1 (cellRef VIRTEX_FDRE_5))
+            (property RLOC (string "R0C0") (owner "Viewlogic_Systems")))
+          (instance (rename &_1I73_10 "$1I73")
+            (viewRef view_1 (cellRef VIRTEX_OR2_6)))
+          (instance (rename &_1I77_11 "$1I77")
+            (viewRef view_1 (cellRef VIRTEX_OR2_6)))
+          (net C
+            (joined
+              (portRef C)
+              (portRef C (instanceRef &_1I35_9))))
+          (net CE
+            (joined
+              (portRef CE)
+              (portRef I0 (instanceRef &_1I77_11))))
+          (net CE_S
+            (joined
+              (portRef CE (instanceRef &_1I35_9))
+              (portRef O (instanceRef &_1I77_11))))
+          (net D_S
+            (joined
+              (portRef D (instanceRef &_1I35_9))
+              (portRef O (instanceRef &_1I73_10))))
+          (net Q
+            (joined
+              (portRef Q)
+              (portRef Q (instanceRef &_1I35_9))
+              (portRef I1 (instanceRef &_1I32_8))))
+          (net R
+            (joined
+              (portRef R)
+              (portRef R (instanceRef &_1I35_9))))
+          (net S
+            (joined
+              (portRef S)
+              (portRef I0 (instanceRef &_1I73_10))
+              (portRef I1 (instanceRef &_1I77_11))))
+          (net T
+            (joined
+              (portRef T)
+              (portRef I0 (instanceRef &_1I32_8))))
+          (net TQ
+            (joined
+              (portRef I1 (instanceRef &_1I73_10))
+              (portRef O (instanceRef &_1I32_8))))
+        )
+      ))
+
+    (cell (rename VIRTEX_VCC_12 "VCC")
+      (cellType GENERIC)
+        (status (written
+         (timeStamp 2003 8 3 6 37 31)))
+      (userData VL_PLATFORM_CODE (string "K 75937174390 VCC")
+        (owner "Viewlogic_Systems"))
+      (userData LIBNAME
+        (string "VIRTEX")
+          (owner "Viewlogic_Systems"))
+      (view view_1
+        (viewType NETLIST)
+        (interface
+          (port P
+            (direction OUTPUT))
+          (property LEVEL (string "XILINX") (owner "Viewlogic_Systems"))
+          (property LIBVER (string "2.0.0") (owner "Viewlogic_Systems")))
+      ))
+
+    (cell (rename VIRTEX_GND_13 "GND")
+      (cellType GENERIC)
+        (status (written
+         (timeStamp 2003 8 3 6 37 31)))
+      (userData VL_PLATFORM_CODE (string "K 296683304100 GND")
+        (owner "Viewlogic_Systems"))
+      (userData LIBNAME
+        (string "VIRTEX")
+          (owner "Viewlogic_Systems"))
+      (view view_1
+        (viewType NETLIST)
+        (interface
+          (port G
+            (direction OUTPUT))
+          (property LEVEL (string "XILINX") (owner "Viewlogic_Systems"))
+          (property LIBVER (string "2.0.0") (owner "Viewlogic_Systems")))
+      ))
+
+    (cell (rename VIRTEX_CB4RE_14 "CB4RE")
+      (cellType GENERIC)
+        (status (written
+         (timeStamp 2003 8 3 6 37 31)))
+      (userData VL_PLATFORM_CODE (string "K 325366353400 cb4re")
+        (owner "Viewlogic_Systems"))
+      (userData LIBNAME
+        (string "VIRTEX")
+          (owner "Viewlogic_Systems"))
+      (view view_1
+        (viewType NETLIST)
+        (interface
+          (port C
+            (direction INPUT))
+          (port CE
+            (direction INPUT))
+          (port CEO
+            (direction OUTPUT))
+          (port Q0
+            (direction OUTPUT))
+          (port Q1
+            (direction OUTPUT))
+          (port Q2
+            (direction OUTPUT))
+          (port Q3
+            (direction OUTPUT))
+          (port R
+            (direction INPUT))
+          (port TC
+            (direction OUTPUT))
+          (property LEVEL (string "MXILINX") (owner "Viewlogic_Systems"))
+          (property LIBVER (string "2.0.0") (owner "Viewlogic_Systems")))
+        (contents
+          (instance (rename &_1I31_15 "$1I31")
+            (viewRef view_1 (cellRef VIRTEX_AND4_1)))
+          (instance (rename &_1I32_8 "$1I32")
+            (viewRef view_1 (cellRef VIRTEX_AND3_2)))
+          (instance (rename &_1I33_16 "$1I33")
+            (viewRef view_1 (cellRef VIRTEX_AND2_3)))
+          (instance Q0
+            (viewRef view_1 (cellRef VIRTEX_FTRSE_7))
+            (property LABEL (string "Q0") (owner "Viewlogic_Systems")))
+          (instance Q1
+            (viewRef view_1 (cellRef VIRTEX_FTRSE_7))
+            (property LABEL (string "Q1") (owner "Viewlogic_Systems")))
+          (instance Q2
+            (viewRef view_1 (cellRef VIRTEX_FTRSE_7))
+            (property LABEL (string "Q2") (owner "Viewlogic_Systems")))
+          (instance Q3
+            (viewRef view_1 (cellRef VIRTEX_FTRSE_7))
+            (property LABEL (string "Q3") (owner "Viewlogic_Systems")))
+          (instance (rename &_1I58_17 "$1I58")
+            (viewRef view_1 (cellRef VIRTEX_VCC_12)))
+          (instance (rename &_1I64_18 "$1I64")
+            (viewRef view_1 (cellRef VIRTEX_GND_13)))
+          (instance (rename &_1I69_19 "$1I69")
+            (viewRef view_1 (cellRef VIRTEX_AND2_3)))
+          (net (rename &_1N55_20 "$1N55")
+            (joined
+              (portRef P (instanceRef &_1I58_17))
+              (portRef T (instanceRef Q0))))
+          (net (rename &_1N62_21 "$1N62")
+            (joined
+              (portRef G (instanceRef &_1I64_18))
+              (portRef S (instanceRef Q3))
+              (portRef S (instanceRef Q2))
+              (portRef S (instanceRef Q1))
+              (portRef S (instanceRef Q0))))
+          (net C
+            (joined
+              (portRef C)
+              (portRef C (instanceRef Q3))
+              (portRef C (instanceRef Q2))
+              (portRef C (instanceRef Q1))
+              (portRef C (instanceRef Q0))))
+          (net CE
+            (joined
+              (portRef CE)
+              (portRef CE (instanceRef Q3))
+              (portRef CE (instanceRef Q2))
+              (portRef CE (instanceRef Q1))
+              (portRef CE (instanceRef Q0))
+              (portRef I0 (instanceRef &_1I69_19))))
+          (net CEO
+            (joined
+              (portRef CEO)
+              (portRef O (instanceRef &_1I69_19))))
+          (net Q0
+            (joined
+              (portRef Q0)
+              (portRef I1 (instanceRef &_1I33_16))
+              (portRef I2 (instanceRef &_1I32_8))
+              (portRef T (instanceRef Q1))
+              (portRef Q (instanceRef Q0))
+              (portRef I3 (instanceRef &_1I31_15))))
+          (net Q1
+            (joined
+              (portRef Q1)
+              (portRef I0 (instanceRef &_1I33_16))
+              (portRef I1 (instanceRef &_1I32_8))
+              (portRef Q (instanceRef Q1))
+              (portRef I2 (instanceRef &_1I31_15))))
+          (net Q2
+            (joined
+              (portRef Q2)
+              (portRef I0 (instanceRef &_1I32_8))
+              (portRef Q (instanceRef Q2))
+              (portRef I1 (instanceRef &_1I31_15))))
+          (net Q3
+            (joined
+              (portRef Q3)
+              (portRef Q (instanceRef Q3))
+              (portRef I0 (instanceRef &_1I31_15))))
+          (net R
+            (joined
+              (portRef R)
+              (portRef R (instanceRef Q3))
+              (portRef R (instanceRef Q2))
+              (portRef R (instanceRef Q1))
+              (portRef R (instanceRef Q0))))
+          (net T2
+            (joined
+              (portRef O (instanceRef &_1I33_16))
+              (portRef T (instanceRef Q2))))
+          (net T3
+            (joined
+              (portRef O (instanceRef &_1I32_8))
+              (portRef T (instanceRef Q3))))
+          (net TC
+            (joined
+              (portRef TC)
+              (portRef O (instanceRef &_1I31_15))
+              (portRef I1 (instanceRef &_1I69_19))))
+        )
+      ))
+
+    (cell (rename VIRTEX_FDR_22 "FDR")
+      (cellType GENERIC)
+        (status (written
+         (timeStamp 2003 8 3 6 37 31)))
+      (userData VL_PLATFORM_CODE (string "K 49099798390 FDR")
+        (owner "Viewlogic_Systems"))
+      (userData LIBNAME
+        (string "VIRTEX")
+          (owner "Viewlogic_Systems"))
+      (view view_1
+        (viewType NETLIST)
+        (interface
+          (port C
+            (direction INPUT))
+          (port D
+            (direction INPUT))
+          (port Q
+            (direction OUTPUT))
+          (port R
+            (direction INPUT))
+          (property INIT (string "R") (owner "Viewlogic_Systems"))
+          (property LEVEL (string "XILINX") (owner "Viewlogic_Systems"))
+          (property LIBVER (string "2.0.0") (owner "Viewlogic_Systems")))
+      ))
+
+    (cell (rename VIRTEX_FD_23 "FD")
+      (cellType GENERIC)
+        (status (written
+         (timeStamp 2003 8 3 6 37 31)))
+      (userData VL_PLATFORM_CODE (string "K 281452817100 FD")
+        (owner "Viewlogic_Systems"))
+      (userData LIBNAME
+        (string "VIRTEX")
+          (owner "Viewlogic_Systems"))
+      (view view_1
+        (viewType NETLIST)
+        (interface
+          (port C
+            (direction INPUT))
+          (port D
+            (direction INPUT))
+          (port Q
+            (direction OUTPUT))
+          (property DEVICE (string "DFF") (owner "Viewlogic_Systems"))
+          (property INIT (string "R") (owner "Viewlogic_Systems"))
+          (property LEVEL (string "XILINX") (owner "Viewlogic_Systems"))
+          (property LIBVER (string "2.0.0") (owner "Viewlogic_Systems")))
+      ))
+
+    (cell (rename VIRTEX_CB2RE_24 "CB2RE")
+      (cellType GENERIC)
+        (status (written
+         (timeStamp 2003 8 3 6 37 31)))
+      (userData VL_PLATFORM_CODE (string "K 305260489100 cb2re")
+        (owner "Viewlogic_Systems"))
+      (userData LIBNAME
+        (string "VIRTEX")
+          (owner "Viewlogic_Systems"))
+      (view view_1
+        (viewType NETLIST)
+        (interface
+          (port C
+            (direction INPUT))
+          (port CE
+            (direction INPUT))
+          (port CEO
+            (direction OUTPUT))
+          (port Q0
+            (direction OUTPUT))
+          (port Q1
+            (direction OUTPUT))
+          (port R
+            (direction INPUT))
+          (port TC
+            (direction OUTPUT))
+          (property LEVEL (string "MXILINX") (owner "Viewlogic_Systems"))
+          (property LIBVER (string "2.0.0") (owner "Viewlogic_Systems")))
+        (contents
+          (instance Q1
+            (viewRef view_1 (cellRef VIRTEX_FTRSE_7))
+            (property LABEL (string "Q1") (owner "Viewlogic_Systems")))
+          (instance Q0
+            (viewRef view_1 (cellRef VIRTEX_FTRSE_7))
+            (property LABEL (string "Q0") (owner "Viewlogic_Systems")))
+          (instance (rename &_1I37_25 "$1I37")
+            (viewRef view_1 (cellRef VIRTEX_AND2_3)))
+          (instance (rename &_1I47_26 "$1I47")
+            (viewRef view_1 (cellRef VIRTEX_VCC_12)))
+          (instance (rename &_1I54_27 "$1I54")
+            (viewRef view_1 (cellRef VIRTEX_GND_13)))
+          (instance (rename &_1I55_28 "$1I55")
+            (viewRef view_1 (cellRef VIRTEX_AND2_3)))
+          (net (rename &_1N33_29 "$1N33")
+            (joined
+              (portRef P (instanceRef &_1I47_26))
+              (portRef T (instanceRef Q0))))
+          (net (rename &_1N50_30 "$1N50")
+            (joined
+              (portRef G (instanceRef &_1I54_27))
+              (portRef S (instanceRef Q1))
+              (portRef S (instanceRef Q0))))
+          (net C
+            (joined
+              (portRef C)
+              (portRef C (instanceRef Q1))
+              (portRef C (instanceRef Q0))))
+          (net CE
+            (joined
+              (portRef CE)
+              (portRef I0 (instanceRef &_1I55_28))
+              (portRef CE (instanceRef Q1))
+              (portRef CE (instanceRef Q0))))
+          (net CEO
+            (joined
+              (portRef CEO)
+              (portRef O (instanceRef &_1I55_28))))
+          (net Q0
+            (joined
+              (portRef Q0)
+              (portRef I1 (instanceRef &_1I37_25))
+              (portRef T (instanceRef Q1))
+              (portRef Q (instanceRef Q0))))
+          (net Q1
+            (joined
+              (portRef Q1)
+              (portRef I0 (instanceRef &_1I37_25))
+              (portRef Q (instanceRef Q1))))
+          (net R
+            (joined
+              (portRef R)
+              (portRef R (instanceRef Q1))
+              (portRef R (instanceRef Q0))))
+          (net TC
+            (joined
+              (portRef TC)
+              (portRef I1 (instanceRef &_1I55_28))
+              (portRef O (instanceRef &_1I37_25))))
+        )
+      ))
+
+    (cell (rename VIRTEX_AND2B1_31 "AND2B1")
+      (cellType GENERIC)
+        (status (written
+         (timeStamp 2003 8 3 6 37 31)))
+      (userData VL_PLATFORM_CODE (string "K 316826229100 AND2B1")
+        (owner "Viewlogic_Systems"))
+      (userData LIBNAME
+        (string "VIRTEX")
+          (owner "Viewlogic_Systems"))
+      (view view_1
+        (viewType NETLIST)
+        (interface
+          (port I0
+            (property PARAM (string "INV") (owner "Viewlogic_Systems"))
+            (direction INPUT))
+          (port I1
+            (direction INPUT))
+          (port O
+            (direction OUTPUT))
+          (property DEVICE (string "AND") (owner "Viewlogic_Systems"))
+          (property LEVEL (string "XILINX") (owner "Viewlogic_Systems"))
+          (property LIBVER (string "2.0.0") (owner "Viewlogic_Systems")))
+      ))
+
+    (cell (rename VIRTEX_INV_32 "INV")
+      (cellType GENERIC)
+        (status (written
+         (timeStamp 2003 8 3 6 37 31)))
+      (userData VL_PLATFORM_CODE (string "K 419708849300 INV")
+        (owner "Viewlogic_Systems"))
+      (userData LIBNAME
+        (string "VIRTEX")
+          (owner "Viewlogic_Systems"))
+      (view view_1
+        (viewType NETLIST)
+        (interface
+          (port I
+            (direction INPUT))
+          (port O
+            (direction OUTPUT))
+          (property DEVICE (string "INV") (owner "Viewlogic_Systems"))
+          (property LEVEL (string "XILINX") (owner "Viewlogic_Systems"))
+          (property LIBVER (string "2.0.0") (owner "Viewlogic_Systems")))
+      ))
+
+    (cell SC2004C_EGEN_35P71M
+      (cellType GENERIC)
+        (status (written
+         (timeStamp 2004 1 17 0 38 4)))
+      (userData VL_PLATFORM_CODE (string "K 200280184400 sc2004c_egen_35p71m")
+        (owner "Viewlogic_Systems"))
+      (view view_1
+        (viewType NETLIST)
+        (interface
+          (port CLK
+            (direction INPUT))
+          (port E
+            (direction OUTPUT))
+          (port RDY
+            (direction OUTPUT))
+          (port TRG_ONE
+            (direction INPUT))
+          (property LEVEL (string "SUSUBOX") (owner "Viewlogic_Systems"))
+          (property LIBVER (string "1.0") (owner "Viewlogic_Systems")))
+        (contents
+          (instance (rename &_1I104_33 "$1I104")
+            (viewRef view_1 (cellRef VIRTEX_CB4RE_14)))
+          (instance (rename &_1I109_34 "$1I109")
+            (viewRef view_1 (cellRef VIRTEX_CB4RE_14)))
+          (instance (rename &_1I110_35 "$1I110")
+            (viewRef view_1 (cellRef VIRTEX_FDR_22)))
+          (instance (rename &_1I127_36 "$1I127")
+            (viewRef view_1 (cellRef VIRTEX_FD_23)))
+          (instance (rename &_1I13_37 "$1I13")
+            (viewRef view_1 (cellRef VIRTEX_FD_23)))
+          (instance (rename &_1I149_38 "$1I149")
+            (viewRef view_1 (cellRef VIRTEX_FD_23)))
+          (instance (rename &_1I161_39 "$1I161")
+            (viewRef view_1 (cellRef VIRTEX_FD_23)))
+          (instance (rename &_1I167_40 "$1I167")
+            (viewRef view_1 (cellRef VIRTEX_VCC_12)))
+          (instance (rename &_1I168_41 "$1I168")
+            (viewRef view_1 (cellRef VIRTEX_FDRE_5)))
+          (instance (rename &_1I173_42 "$1I173")
+            (viewRef view_1 (cellRef VIRTEX_AND2_3)))
+          (instance (rename &_1I178_43 "$1I178")
+            (viewRef view_1 (cellRef VIRTEX_CB2RE_24)))
+          (instance (rename &_1I180_44 "$1I180")
+            (viewRef view_1 (cellRef VIRTEX_AND2_3)))
+          (instance (rename &_1I28_45 "$1I28")
+            (viewRef view_1 (cellRef VIRTEX_AND2B1_31)))
+          (instance (rename &_1I31_15 "$1I31")
+            (viewRef view_1 (cellRef VIRTEX_INV_32)))
+          (instance (rename &_1I32_8 "$1I32")
+            (viewRef view_1 (cellRef VIRTEX_FD_23)))
+          (instance (rename &_1I54_27 "$1I54")
+            (viewRef view_1 (cellRef VIRTEX_INV_32)))
+          (instance (rename &_1I62_46 "$1I62")
+            (viewRef view_1 (cellRef VIRTEX_AND2_3)))
+          (net (rename &_1N11_47 "$1N11")
+            (joined
+              (portRef I1 (instanceRef &_1I28_45))
+              (portRef D (instanceRef &_1I13_37))
+              (portRef Q (instanceRef &_1I127_36))))
+          (net (rename &_1N12_48 "$1N12")
+            (joined
+              (portRef I0 (instanceRef &_1I28_45))
+              (portRef Q (instanceRef &_1I13_37))))
+          (net (rename &_1N123_49 "$1N123")
+            (joined
+              (portRef I (instanceRef &_1I31_15))
+              (portRef O (instanceRef &_1I173_42))))
+          (net (rename &_1N126_50 "$1N126")
+            (joined
+              (portRef R (instanceRef &_1I104_33))
+              (portRef R (instanceRef &_1I178_43))
+              (portRef O (instanceRef &_1I62_46))
+              (portRef R (instanceRef &_1I110_35))
+              (portRef D (instanceRef &_1I161_39))))
+          (net (rename &_1N140_51 "$1N140")
+            (joined
+              (portRef CEO (instanceRef &_1I104_33))
+              (portRef CE (instanceRef &_1I178_43))))
+          (net (rename &_1N150_52 "$1N150")
+            (joined
+              (portRef Q (instanceRef &_1I149_38))
+              (portRef D (instanceRef &_1I127_36))))
+          (net (rename &_1N162_53 "$1N162")
+            (joined
+              (portRef D (instanceRef &_1I149_38))
+              (portRef Q (instanceRef &_1I161_39))))
+          (net (rename &_1N166_54 "$1N166")
+            (joined
+              (portRef D (instanceRef &_1I168_41))
+              (portRef P (instanceRef &_1I167_40))))
+          (net (rename &_1N170_55 "$1N170")
+            (joined
+              (portRef CEO (instanceRef &_1I109_34))
+              (portRef CE (instanceRef &_1I168_41))))
+          (net (rename &_1N2_56 "$1N2")
+            (joined
+              (portRef O (instanceRef &_1I31_15))
+              (portRef D (instanceRef &_1I32_8))
+              (portRef CE (instanceRef &_1I109_34))))
+          (net (rename &_1N55_57 "$1N55")
+            (joined
+              (portRef CE (instanceRef &_1I104_33))
+              (portRef O (instanceRef &_1I54_27))))
+          (net (rename &_1N9_58 "$1N9")
+            (joined
+              (portRef R (instanceRef &_1I109_34))
+              (portRef O (instanceRef &_1I28_45))
+              (portRef R (instanceRef &_1I168_41))))
+          (net (rename &_1N92_59 "$1N92")
+            (joined
+              (portRef I0 (instanceRef &_1I62_46))
+              (portRef I (instanceRef &_1I54_27))
+              (portRef D (instanceRef &_1I110_35))
+              (portRef O (instanceRef &_1I180_44))))
+          (net CLK
+            (joined
+              (portRef CLK)
+              (portRef C (instanceRef &_1I104_33))
+              (portRef C (instanceRef &_1I178_43))
+              (portRef C (instanceRef &_1I149_38))
+              (portRef C (instanceRef &_1I32_8))
+              (portRef C (instanceRef &_1I109_34))
+              (portRef C (instanceRef &_1I13_37))
+              (portRef C (instanceRef &_1I110_35))
+              (portRef C (instanceRef &_1I127_36))
+              (portRef C (instanceRef &_1I161_39))
+              (portRef C (instanceRef &_1I168_41))))
+          (net CYCLE1
+            (joined
+              (portRef Q1 (instanceRef &_1I104_33))
+              (portRef I1 (instanceRef &_1I180_44))))
+          (net CYCLE5
+            (joined
+              (portRef Q1 (instanceRef &_1I178_43))
+              (portRef I0 (instanceRef &_1I180_44))))
+          (net E
+            (joined
+              (portRef E)
+              (portRef Q (instanceRef &_1I32_8))))
+          (net PW0
+            (joined
+              (portRef Q0 (instanceRef &_1I109_34))
+              (portRef I1 (instanceRef &_1I173_42))))
+          (net PW4
+            (joined
+              (portRef Q (instanceRef &_1I168_41))
+              (portRef I0 (instanceRef &_1I173_42))))
+          (net RDY
+            (joined
+              (portRef RDY)
+              (portRef Q (instanceRef &_1I110_35))))
+          (net TRG_ONE
+            (joined
+              (portRef TRG_ONE)
+              (portRef I1 (instanceRef &_1I62_46))))
+        )
+      ))
+
+  )
+  (design SC2004C_EGEN_35P71M
+    (cellRef SC2004C_EGEN_35P71M
+      (libraryRef SC2004C_EGEN_35P71M))
+  )
+)

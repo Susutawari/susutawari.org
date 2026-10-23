@@ -1,0 +1,843 @@
+<!Doctype html Public "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<title>Made by Susutawari - Memos</title>
+<link rel="stylesheet" href="susu.css" type="text/css">
+<link rev="Made" href="mailto:susu@susutawari.org">
+<link rel="Index" href="../index.html">
+</head>
+<body>
+<p>
+Last up date:
+<!--#echo var="LAST_MODIFIED"-->
+</p>
+<basefont size="3">
+<font size="+1"><strong>個人的作業メモ</strong></font>
+（FreeBSDでの各種設定方法などを中心にした備忘録です。）
+<hr>
+気になるキーワード：tcpdump
+<hr>
+
+<ul>
+<li><strong>19inchラックのネジ間隔</strong>
+<br>
+     19inchラックを固定するネジの横方向の間隔は<strong>465[mm]</strong><br>
+19[inch]=482.6[mm]であるが、これは通常収納ラックの内寸となっているのでこの幅のケースは収納不可。収納可能なケースの幅はEIAの場合で450[mm]くらいまで。
+<a href="http://www.settsu.co.jp/technique/nineteeninch/">参考</a>
+</ul>
+
+<hr>
+
+<ul>
+<li><strong>Windows7からSambaにアクセスできない場合の対応方法</strong>
+<br>
+「ローカル セキュリティ ポリシー」→「ローカル ポリシー」→「ネットワーク セキュリティ: LAN Manager 認証レベル」→"NTLM 応答のみ送信する"を設定
+</ul>
+
+<hr>
+
+<ul>
+<li><strong>Agilent 54645Dの画面キャプチャソフトの不具合</strong></li>
+新しいVer.3.70だと下図のように、垂直方向に線状のノイズが入る。Ver.3.1だと大丈夫。ただし、Ver.3.1はUIが悪い。
+<table summary="54645D" class="wide">
+<tr><td>
+<img class="margin80" src="Waveform20110127003.png" width="512" height="280" alt="Waveform01">
+<br>
+<a href="http://www.home.agilent.com/agilent/redirector.jspx?action=ref&nid=-536902796.0.00&lc=jpn&cc=JP&ckey=896758&cname=AGILENT_EDITORIAL">IntuiLink Data Capture for Agilent Oscilloscopes, Version 3.70</a> の場合 (ノイズが入る)
+</td></tr>
+<tr><td>
+<img class="margin80" src="Waveform20110127004.bmp" width="512" height="280" alt="Waveform02">
+<br>
+<a href="http://www.home.agilent.com/agilent/redirector.jspx?action=ref&nid=-536902796.0.00&lc=jpn&cc=JP&ckey=1000000874%3Aepsg%3Asud&cname=AGILENT_EDITORIAL">54600シリーズ・オシロスコープ用IntuiLink、バージョン3.1</a> の場合 (正常)
+</td></tr>
+</table>
+</ul>
+
+<hr>
+
+<ul>
+<li><strong>Meadowで行番号を付けて印刷する方法</strong></li>
+<br>
+<a href="http://hp.vector.co.jp/authors/tfuruka1/software/ak2pr/">ak2pr</a>を利用。<br>
+.emacs に下記を追加。
+<pre class="code">
+(setq lpr-command
+      (expand-file-name (concat exec-directory
+      "../../ak2pr/bin/ak2pr.exe")))
+      (setq lpr-switches '())
+      (setq lpr-add-switches t)
+      (setq lpr-command-switches '())
+</pre>
+（ak2pr.exeのパスは適時変更）
+</ul>
+
+<hr>
+
+<ul>
+<li><strong>FreeBSDのtcshのNLSのlocale(EUC)パス</strong></li>
+<br>
+4.X系
+<pre class="code">/usr/share/nls/ja_JP.EUC</pre>
+
+5.X系 (4.6Rからはja_JP.EUCはシンボリックリンクとなったため、こっちが正解？)
+<pre class="code">/usr/share/nls/ja_JP.eucJP</pre>
+</ul>
+
+<hr>
+
+<ul>
+<li><strong>FreeBSDのバージョン情報表示</strong>
+<br>
+<pre class="code">>uname -a</pre>
+</ul>
+
+<hr>
+
+<ul>
+<li><strong>XOOPS Ver.2.0.16a JP + PHP 4.4.X で新規投稿通知メールのSubjectなどが文字化けする場合の対策</strong>
+</li>
+<br>
+/language/japanese/xoopsmailerlocal.php に<a href="xoopsmailerlocal.php.patch">パッチ</a>を充てる。
+<pre class="code">
+>patch xoopsmailerlocal.php < xoopsmailerlocal.php.patch
+</pre>
+<a href="http://xoopscube.jp/modules/xhnewbb/viewtopic.php?topic_id=4591&post_id=20680">参考</a>,
+</ul>
+
+<hr>
+
+<ul>
+<li><strong>SquirrelMail + Postfix における添付ファイル容量制限の設定</strong>
+</li>
+<br>
+SquirrekMailでファイルを添付する際、そのファイルの容量制限はPHP(php.ini)の上限とApache(httpd.conf)の制限によるが、Postfixで運用している場合はPostfix(main.cf)での制限も合わせる必要がある。<br>
+容量制限を20MByteとしたい場合は下記の通り。<br>
+<br>
+<strong>php.ini</strong>
+<pre class="code">
+upload_max_filesize = 20M
+post_max_size = 20M
+</pre>
+<br>
+<strong>httpd.conf</strong>
+<pre class="code">
+<Files *.php>
+LimitRequestBody 52428800
+</Files>
+</pre>
+httpd.conf の制限は扱いたい上限よりも大きめにとる（phpの実行により多くの容量が必要なため）。上記は50MByte制限。<br>
+<br>
+<strong>postfix の main.cf</strong>
+<pre class="code">
+mailbox_size_limit = 20971520
+message_size_limit = 20971520
+body_checks_size_limit = 20971520
+</pre>
+<table summary="main.cf" border="3">
+<tr><th>パラメータ</th><th>意味</th></tr>
+<tr><td>mailbox_size_limit</td><td>1受信メッセージあたりの最大容量（0で無制限）</td></tr>
+<tr><td>message_size_limit</td><td>1送信メッセージの最大容量</td></tr>
+<tr><td>body_checks_size_limit</td><td>添付ファイルの最大容量</td></tr>
+</table>
+<a href="http://kuro.crow2.net/normal/squirrelmail.htm">参考1</a>,
+<a href="http://www.kozupon.com/mail/postfix2.html">参考2</a>.
+</ul>
+
+<hr>
+
+<ul>
+<li><strong>SquirrelMailのレスポンス向上</strong></li>
+<br>
+conf.pl(./configure) の設定項目中の「4. General Options」中の「11. Allow server-side sorting」を"true"に変更する。ディフォルトだとPHPでソートするようになっているようで、この変更をするとInboxのアクセスがとても速くなる。これでやっと普通のメーラ並みのレスポンスになった。<br>
+動作速度が遅い（重い）場合の原因には他に、内部でのDNSの逆引きなどに失敗していることなどがあるらしい。<br>
+<a href="http://sanguine.jp/pipermail/squirrelmail-users/2003-February/001804.html">参考1</a>.
+</ul>
+
+<hr>
+
+<ul>
+<li><strong>SquirrelMailで、リプライするときの引用文の先頭に付く「On 日付 xxx wrote:」を英語に変更する方法</strong></li>
+<br>
+squirremail のインストールディレクトリにある /locale/ja_JP/LC_MESSAGES/squirrelmail.po の日付に関する部分を修正する。（修正後の <a href="squirrelmail.po">squirrelmail.po</a>）
+修正後、squirrelmail.po をコンパイルする。
+<pre class="code">
+>cd po
+>./compilepo ja_JP
+</pre>
+コンパイル後、webサーバをリスタートする。<br>
+<a href="http://www.squirrelmail.jp/node.php?id=252">参考1</a>.
+</ul>
+
+<hr>
+
+<ul>
+<li><strong>SquirrelMailでメールのSubjectが文字化けする場合の対策</strong></li>
+<br>
+Subjectに半角と全角が混じっていると文字化けすることがある。<br>
+これは、squirrelmailのインストール・ディレクトリ内の、/class/deliver/Deliver.class.php の 458行目を下記のように修正することで対応可能。
+<pre class="code">
+$header[] = 'Subject: '.encodeHeader($rfc822_header->subject) . $rn;
+</pre>
+->
+<pre class="code">
+$header[] = 'Subject: '.mb_convert_encoding($rfc822_header->subject,"JIS") . $rn;
+</pre>
+<a href="http://www.squirrelmail.jp/node.php?id=290">参考1</a>.
+</ul>
+
+<hr>
+
+<ul>
+<li><strong>cronによる自動定期処理</strong></li>
+<br>
+/etc/crontab を編集<br>
+フォーマットは、<br>
+<strong>分 時 日 月 曜日 実行ユーザ コマンド</strong><br>
+となっている。曜日に関しては日曜日から0〜7の数字(7も日曜日)、もしくは sun〜satで指定する。ワイルドカード * も使用可能。
+<pre class="code">
+ex.
+分      時      日      月     曜日  実行ユーザ コマンド
+0       6       *       *       *       root    /usr/local/etc/awstats/awstats.cron
+</pre>
+<br>
+とすると、毎日6:00にroot権限で/usr/local/etc/awstats.cron が実行される。<br>
+<br>
+<del>設定が終わったら、デーモンを再起動します。</del><br>
+<strong>>/etc/rc.d/cron restart</strong><br>
+上記で再起動できますが、cronは1分毎に/etc/crontabをチェックし、再読み込みするので再起動の必要はない。<br>
+<br>
+うまく動かない場合は、実行したいシェルの実行権が付いているか(755か)、シェルまでのパスがフルパスで記述されているかを確認。<br>
+<a href="http://www.express.nec.co.jp/linux/tech/knowledge/system/crond.html">参考1</a>,
+<a href="http://www.linux.or.jp/JM/html/cron/man8/cron.8.html">参考2</a>,
+<a href="http://tsuttayo.sytes.net/crond/">参考3</a>.
+
+
+</ul>
+
+<hr>
+
+<ul>
+<li><strong>.htaccessによる認証</strong></li>
+<br>
+<ol>
+<li>アクセス制限したいディレクトリに .htaccess を下記のような内容で作成。<br>
+<pre class="code">
+AuthUserFile /home/username/.htpasswd
+AuthGroupFile /dev/null
+AuthName "Comment for Display."
+AuthType Basic
+require valid-user
+</pre></li>
+<li><strong>htpasswd -bc /home/username/.htpasswd USERNAME PASSWORD</strong> にて.htpasswd を作成。複数のアカウントを作る場合、二回目以降は -c オプションを付けない。</li>
+</ol>
+<a href="http://yang.amp.i.kyoto-u.ac.jp/~yyama/FreeBSD/www/htaccess-j.html">参考1</a>, 
+<a href="http://tsuttayo.sytes.net/apache/access/htaccess/">参考2</a>.
+</ul>
+
+<hr>
+
+<ul>
+<li><strong>AWStats 再び</strong></li>
+<br>
+AWStats 6.5 日本語版のインストール<br>
+<ol>
+<li><a href="http://homepage2.nifty.com/hobbit/html/awstats.html">AWStatsをFreeBSDで動かす</a>よりダウンロード。</li>
+<li>/usr/local/etc/awstats などを作成し、アーカイブを展開。</li>
+<li>docs内の解説を参考にインストール開始。</li>
+<li>toolsディレクトリ内のawstats_configure.plを実行して各種設定を行う。</li>
+<li>設定ファイル awstats.www.xxx.conf の該当箇所を修正。修正箇所は、
+ <ul>
+ <li>LogFile="/var/log/httpd-access.log"</li>
+ <li>SiteDomain="www.xxx.com"</li>
+ <li>DirData="/var/log/awstats"</li>
+ </ul>
+など。
+</li>
+<li>データ出力用ディレクトリ /var/log/awstats を作成。</li>
+</ol>
+<br>
+以上でインストールは完了。<br>
+<strong>>perl /usr/local/etc/awstats/wwwroot/cgi-bin/awstats.pl -update -config=コンフィグ名</strong><br>
+で解析結果(Text形式)が出力される。（コンフィグ名は www.xxx.com など設定ファイル名の頭の awstats. をとったもの。）<br>
+さらにこれからhtml形式のレポートを作成するには、下記を実行する。<br>
+<strong>>perl /usr/local/etc/awstats/wwwroot/cgi-bin/awstats.pl -output -config=コンフィグ名 -staticlinks > 出力ファイル名</strong><br>
+動作確認ができたら、さらに cron に追加しておくとよい。<br>
+<br>
+下記、cron用スクリプト<br>
+<p class="code">
+#!/usr/bin/perl<br>
+system("/usr/local/etc/awstats/wwwroot/cgi-bin/utf8_decode.pl < /var/log/access_log > /var/log/access_log.utf8");<br>
+<br>
+system("/usr/local/etc/awstats/wwwroot/cgi-bin/awstats.pl -config=www.xxx.com -update");<br>
+<br>
+system("/usr/local/etc/awstats/wwwroot/cgi-bin/awstats.pl -config=www.xxx.com -output -staticlinks -month=all > /public_html/www.xxx.com/index.html");<br>
+<br>
+system("/usr/local/etc/awstats/wwwroot/cgi-bin/awstats.pl -config=www.xxx.com -output=alldomains -staticlinks -month=all > /public_html/www.xxx.com/awstats.www.xxx.com.alldomains.html");<br>
+<br>
+system("/usr/local/etc/awstats/wwwroot/cgi-bin/awstats.pl -config=www.xxx.com -output=allhosts -staticlinks -month=all > /public_html/www.xxx.com/awstats.www.xxx.com.allhosts.html");<br>
+<br>
+system("/usr/local/etc/awstats/wwwroot/cgi-bin/awstats.pl -config=www.xxx.com -output=lasthosts -staticlinks -month=all > /public_html/www.xxx.com/awstats.www.xxx.com.lasthosts.html");<br>
+<br>
+system("/usr/local/etc/awstats/wwwroot/cgi-bin/awstats.pl -config=www.xxx.com -output=unknownip -staticlinks -month=all > /public_html/www.xxx.com/awstats.www.xxx.com.unknownip.html");<br>
+<br>
+system("/usr/local/etc/awstats/wwwroot/cgi-bin/awstats.pl -config=www.xxx.com -output=alllogins -staticlinks -month=all > /public_html/www.xxx.com/awstats.www.xxx.com.alllogins.html");<br>
+<br>
+system("/usr/local/etc/awstats/wwwroot/cgi-bin/awstats.pl -config=www.xxx.com -output=lastlogins -staticlinks -month=all > /public_html/www.xxx.com/awstats.www.xxx.com.lastlogins.html");<br>
+<br>
+system("/usr/local/etc/awstats/wwwroot/cgi-bin/awstats.pl -config=www.xxx.com -output=allrobots -staticlinks -month=all > /public_html/www.xxx.com/awstats.www.xxx.com.allrobots.html");<br>
+<br>
+system("/usr/local/etc/awstats/wwwroot/cgi-bin/awstats.pl -config=www.xxx.com -output=lastrobots -staticlinks -month=all > /public_html/www.xxx.com/awstats.www.xxx.com.lastrobots.html");<br>
+<br>
+system("/usr/local/etc/awstats/wwwroot/cgi-bin/awstats.pl -config=www.xxx.com -output=urldetail -staticlinks -month=all > /public_html/www.xxx.com/awstats.www.xxx.com.urldetail.html");<br>
+<br>
+system("/usr/local/etc/awstats/wwwroot/cgi-bin/awstats.pl -config=www.xxx.com -output=urlentry -staticlinks -month=all > /public_html/www.xxx.com/awstats.www.xxx.com.urlentry.html");<br>
+<br>
+system("/usr/local/etc/awstats/wwwroot/cgi-bin/awstats.pl -config=www.xxx.com -output=urlexit -staticlinks -month=all > /public_html/www.xxx.com/awstats.www.xxx.com.urlexit.html");<br>
+<br>
+system("/usr/local/etc/awstats/wwwroot/cgi-bin/awstats.pl -config=www.xxx.com -output=browserdetail -staticlinks -month=all > /public_html/www.xxx.com/awstats.www.xxx.com.browserdetail.html");<br>
+<br>
+system("/usr/local/etc/awstats/wwwroot/cgi-bin/awstats.pl -config=www.xxx.com -output=osdetail -staticlinks -month=all > /public_html/www.xxx.com/awstats.www.xxx.com.osdetail.html");<br>
+<br>
+system("/usr/local/etc/awstats/wwwroot/cgi-bin/awstats.pl -config=www.xxx.com -output=unknownbrowser -staticlinks -month=all > /public_html/www.xxx.com/awstats.www.xxx.com.unknownbrowser.html");<br>
+<br>
+system("/usr/local/etc/awstats/wwwroot/cgi-bin/awstats.pl -config=www.xxx.com -output=unknownos -staticlinks -month=all > /public_html/www.xxx.com/awstats.www.xxx.com.unknownos.html");<br>
+<br>
+system("/usr/local/etc/awstats/wwwroot/cgi-bin/awstats.pl -config=www.xxx.com -output=refererse -staticlinks -month=all > /public_html/www.xxx.com/awstats.www.xxx.com.refererse.html");<br>
+<br>
+system("/usr/local/etc/awstats/wwwroot/cgi-bin/awstats.pl -config=www.xxx.com -output=refererpages -staticlinks -month=all > /public_html/www.xxx.com/awstats.www.xxx.com.refererpages.html");<br>
+<br>
+system("/usr/local/etc/awstats/wwwroot/cgi-bin/awstats.pl -config=www.xxx.com -output=keyphrases -staticlinks -month=all > /public_html/www.xxx.com/awstats.www.xxx.com.keyphrases.html");<br>
+<br>
+system("/usr/local/etc/awstats/wwwroot/cgi-bin/awstats.pl -config=www.xxx.com -output=keywords -staticlinks -month=all > /public_html/www.xxx.com/awstats.www.xxx.com.keywords.html");<br>
+<br>
+system("/usr/local/etc/awstats/wwwroot/cgi-bin/awstats.pl -config=www.xxx.com -output=errors404 -staticlinks -month=all > /public_html/www.xxx.com/awstats.www.xxx.com.errors404.html");<br>
+</p>
+<a href="http://homepage2.nifty.com/hobbit/html/awstats.html">参考1</a>,
+<a href="http://www.perfectsky.net/awstats/index.html">参考2</a>.
+</ul>
+
+<hr>
+
+<ul>
+<li><strong>スタイルシートでテーブルを中央揃えする方法</strong></li>
+<br>
+table.center{margin-left: auto; margin-right: auto} とする。
+<br>
+<a href="http://www.anslasax.net/css-make/t-a/">参考1</a>.
+</ul>
+
+<hr>
+
+<ul>
+<li><strong>SquirrelMailである日突然「送信」ボタンを押しても画面が更新されなくなったり、返信や転送ができなくなる原因</strong></li>
+<br>
+メールボックスに入っているメールの総数が多くなると、PHPのメモリ容量制限で読めなくなっているぽい。<br>
+Apacheのエラーログに Allowed memory size of 8388608 bytes exhausted と出ている。<br>
+<strong>対策：</strong>php.ini中の memory_limit = 8M の値を増やす。<br>
+<a href="http://sanguine.jp/pipermail/squirrelmail-users/2002-December/000155.html">参考1</a>,
+<a href="http://www.fkimura.com/squirrelmail1.html">参考2</a>.
+</ul>
+
+<hr>
+
+<ul>
+<li><strong>Mysqlのコマンドラインからのでのデータベース操作方法</strong></li>
+<br>
+データベース作成: >mysqladmin -u アカウント名 -p create データベース名<br>
+データベース削除: >mysqladmin -u アカウント名 -p drop データベース名<br>
+</ul>
+
+<hr>
+
+<ul>
+<li><strong>Mysqlのコマンドラインからのでのデータベースバックアップ方法</strong></li>
+<br>
+データベースバックアップ: >mysqldump -u ユーザ名 -p -q データベース名 > 出力ファイル名<br>
+データベースリストア: >mysql -u ユーザ名 -p リストア先データベース名 < 入力ファイル名<br>
+<a href="http://www.rfs.jp/server/mysql/02/07.html">参考1</a>,
+<a href="http://www.bitscope.co.jp/tep/MySQL/quickMySQL.html">参考2</a>.
+</ul>
+
+<hr>
+
+<ul>
+<li><strong>XOOPSの移転</strong></li>
+<br>
+1. MySQLデータベースのバックアップ<br>
+2. 移転先MySQLデータベースの作成<br>
+3. 移転先データベースへのコピー<br>
+4. XOOPSファイルのコピー<br>
+5. mainfile.phpの編集<br>
+6. cache, templates_c にあるファイルの削除<br>
+7. cache, templates_c, upload のパーミッションを 777 に変更<br>
+<br>
+mainfile.php中の<br>
+<br>
+define('XOOPS_ROOT_PATH', '/home/XXX/public_html（フルパス、末尾スラッシュなし）');<br>
+define('XOOPS_URL', 'サイトのURL（末尾スラッシュなし）');<br>
+define('XOOPS_DB_USER', '新規MySQLアカウント名');<br>
+define('XOOPS_DB_NAME', '新規MySQLデータベース名');<br>
+
+</ul>
+
+<hr>
+
+<ul>
+<li><strong>sendmailでの特定ホストからの受信拒否設定方法</strong></li>
+<br>
+/etc/sendmail.spamlist に受信拒否したいホストを記述<br>
+<br>
+ホスト名 discard （相手に何も返信しない場合）<br>
+ホスト名 any comment （相手にエラーメッセージを返す場合）<br>
+<br>
+>makemap hash /etc/sendmail.spamlist.db < ./sendmail.spamlist<br>
+でsendmail.spamlist.dbを更新して再起動。
+<br>
+<a href="http://www.palmyra.ne.jp/technical_memo/sendmail.html">参考</a><br>
+<br>
+</ul>
+
+<hr>
+<ul>
+<li><strong>OpenSSHの更新</strong></li>
+<br>
+<a href="http://m.u.packet-workz.co.jp/doc/sshd.html">参考</a><br>
+<br>
+</ul>
+
+<hr>
+
+<ul>
+<li><strong>OpenSSHのssh-keygenによるDSA鍵ペアの生成方法</strong></li>
+<br>
+>ssh-keygen -t dsa -b ビット長<br>
+<br>
+秘密鍵の名前は id_dsa とする。<br>
+<br>
+※putty-keygenで生成した公開鍵とまとめて authorized_keys を作る場合、
+putty-keygenで生成した公開鍵は末尾につけないとうまくくっつかないことがある。
+</ul>
+
+<hr>
+
+<ul>
+<li><strong>sendmail, postfix などにおける .forward の書き方</strong></li>
+<br>
+Maildir形式のばやい<br>
+~/Maildir/<br>
+転送先のアドレス1<br>
+転送先のアドレス2<br>
+<br>
+mbox形式のばやい<br>
+\アカウント名<br>
+転送先のアドレス1<br>
+転送先のアドレス2<br>
+<br>
+とする。
+</ul>
+
+<hr>
+
+<ul>
+<li><strong>IE対応のマルチアイコン・タイプのfavicon.icoの作成方法</strong></li>
+<br>
+1. 16x16 と 32x32 pixel の画像を作成。<br>
+2. <a href="http://www.towofu.net/soft/" target="_top">@icon変換</a> (Windows用ソフト)でfavicon.icoを作成。<br>
+3. index.htmlのヘッダ中に、&lt;link rel=&quot;shortcut icon&quot; href=&quot;favicon.ico&quot;&gt; を追加。<br>
+<br>
+<a href="http://sonic64.hp.infoseek.co.jp/2004-04-11.html" target="_top">参考1</a>
+</ul>
+
+<hr>
+
+<ul>
+<li><strong>PHP 4.4.0 の文字化け対応パッチ</strong></li>
+<br>
+SquirrelMail 1.4.5でSubjectが日本語のメールを出すと、Subjectが文字化けする原因。<br>
+<br>
+ 対策：PHP 4.3.11 にバージョンダウンするか、下記の通りパッチを当てる（パッチをfilesに入れて再コンパイルする）。<br>
+<br>
+>cd /usr/ports/converters/php4-mbstring<br>
+>mkdir files<br>
+>cd files<br>
+>fetch <a href="php440_bugfix/patch-ext__mbstring__libmbfl__mbfl__mbfilter.c">patch-ext__mbstring__libmbfl__mbfl__mbfilter.c</a><br>
+>cd ../<br>
+>make clean<br>
+>make<br>
+>make deinstall<br>
+>make install<br>
+<br>
+<a href="http://sanguine.jp/pipermail/squirrelmail-users/2005-July/001417.html" target="_top">参考1</a>,
+<a href="http://sanguine.jp/pipermail/squirrelmail-users/2005-July/thread.html#1417" target="_top">参考2</a>,
+<a href="http://ns1.php.gr.jp/pipermail/php-dev/2005-July/001159.html" target=_top">参考3</a><br>
+<br>
+リンク切れ用(ローカル)<br>
+<a href="php440_bugfix/001417.html" target="_top">参考1</a>,
+<a href="php440_bugfix/thread.html#1417" target="_top">参考2</a>,
+<a href="php440_bugfix/001159.html" target="_top">参考3</a><br>
+</ul>
+
+<hr>
+
+<ul>
+<li><strong>SquirrelMail 1.4.5の設定(内部だけどSSL化)</strong></li>
+<br>
+>cd /usr/local/www/squirrelmail/config<br>
+>./conf.pl<br>
+<br>
+Main Menu の 2.Server Settings で、A.Update IMAP Settings を選択し、
+5.IMAP Port を 993 に、7.Secure IMAP (TLS) を true に変更。<br>
+また、8.Server software は使用するimapにあわせて uw or courierにする。<br>
+<br>
+<font color="Red">Courier-IMAPの場合はさらに下記の設定が必要!</font><br>
+3.Folder Defaults の<br>
+1.Default Folder Prefix を none に、<br>
+3.Trash Folder を Inbox.Trash に、<br>
+4. Sent Folder を Inbox.Sent に、<br>
+5. Drafts Folder を Inbox.Drafts に変更。<br>
+<br>
+</ul>
+
+<hr>
+
+<ul>
+<li><strong>SquirrelMail向けCourier-IMAPの設定(内部だけどSSL化)</strong></li>
+<br>
+UW-IMAPはmbox形式なので、Maildir形式のCourier-IMAPに変更。<br>
+<br>
+>cd /usr/local/etc/courier-imap<br>
+>cp cp imapd.cnf.dist imapd.cnf<br>
+imapd.cnfの下記該当部分を編集。<br>
+<br>
+[ req_dn ]<br>
+C=JP<br>
+ST=None<br>
+L=None<br>
+O=ms.susutawari.org<br>
+OU=Automatically-generated IMAP SSL key<br>
+CN=susutawari.org<br>
+emailAddress=susu@susutawari.org<br>
+<br>
+>/usr/local/share/courier-imap/mkimapdcert を実行するとkeyができる。<br>
+（/usr/local/share/courier-imap/imapd.pem）<br>
+<br>
+/usr/local/etc/courier-imap/imapd-ssl の下記該当部分を編集。<br>
+<br>
+SSLADDRESS=127.0.0.1<br>
+IMAPDSSLSTART=YES<br>
+IMAPDSTARTTLS=NO<br>
+IMAP_TLS_REQUIRED=1<br>
+(TLS_CERTFILE=/usr/local/share/courier-imap/imapd.pem)<br>
+<br>
+Courier-IMAPはinetdから起動されるわけではないので、imapsをコメントアウト。<br>
+/etc/rc.conf の inetd_enable="YES" をはずし、代わりに<br>
+<font color="Red">courier_authdaemond_enable="YES"</font>と、<br>
+courier_imap_imapd_ssl_enable="YES" を追加。<br>
+<br>
+また、postfixの設定(main.cf)で、home_mailbox = Maildir/ を設定する必要あり。<br>
+なお、各ユーザーのMaildirは最初にメールを受信したときに作られるが、maildirmakeコマンドでも生成可能。<br>
+<a href="http://www.smalltown.ne.jp/~usata/memo/mailserver.shtml" target="_top">参考1</a>,
+<a href="http://mjm4u.net/oss/courier-imap/" target="_top">参考2</a>,
+<a href="http://stada.jp/comp/imap4.html" target="_top">参考3</a>
+</ul>
+
+<hr>
+
+<ul>
+<li><strong>SquirrelMail向けUW-IMAPの設定(内部だけどSSL化)</strong></li>
+<br>
+<font color="Red">※FreeBSD 5.X系はディフォルトでinetdが起動していないのでimapdも起動しない。</font><br>
+portsから WITH_SSL_AND_PLAINTEXT=yes オプションをつけて cclient と imap-uw をインストール。<br>
+>cd /usr/ports/mail/cclient<br>
+>make WITH_SSL_AND_PLAINTEXT=yes install<br>
+>cd /usr/ports/mail/imap-uw<br>
+>make WITH_SSL_AND_PLAINTEXT=yes install<br>
+<br>
+/etc/inetd.conf に下記を追加。<br>
+imaps stream tcp nowait root /usr/local/libexec/imapd imapd<br>
+<br>
+/etc/hosts.allow に下記を追加。<br>
+imapsd : localhost : allow<br>
+imapsd : ALL : deny<br>
+<br>
+/etc/rc.conf に下記を追加。<br>
+inetd_enable="YES"<br>
+
+<br>
+<a href="http://hiiro-sou.hp.infoseek.co.jp/unix/tips/imap.html" target="_top">参考1</a>,
+<a href="http://www.sleepingbird.net/linux/webmail.shtml" target="_top">参考2</a><br>
+</ul>
+
+<hr>
+
+<ul>
+<li><strong>Apache21でのSSL設定</strong></li>
+<br>
+/etc/rc.conf 中に apache21ssl_enable="YES"を追加<br>
+<br>
+
+>cd /usr/local/etc/apache21<br>
+>mkdir ssl.key ssl.crt<br>
+>chmod 700 ssl.key ssl.crt<br>
+>openssl genrsa -out /usr/local/etc/apache21/ssl.key/server.key 1024<br>
+>openssl req -new -days 365 -key /usr/local/etc/apache21/ssl.key/server.key -out /usr/local/etc/apache21/ssl.crt/server.csr<br>
+>openssl x509 -in /usr/local/etc/apache21/ssl.crt/server.csr -out /usr/local/etc/apache21/ssl.crt/server.crt -req -signkey /usr/local/etc/apache21/ssl.key/server.key -days 365<br>
+>chmod 400 ssl.key/* ssl.crt/*<br>
+<br>
+/usr/local/etc/apache21/ssl.confを編集。<br>
+<br>
+#   General setup for the virtual host<br>
+DocumentRoot "/usr/local/www/data"<br>
+ServerName <strong>www.example.com</strong>:443<br>
+ServerAdmin <strong>you@example.com</strong><br>
+ErrorLog /var/log/httpd-error.log<br>
+TransferLog /var/log/httpd-access.log<br>
+<br>
+ファイル中で 上記 ServerNameとServerAdminを書き換える。<br>
+<br>
+<a href="http://www.fkimura.com/apache11.html">参考1</a><br>
+</ul>
+
+<hr>
+
+<ul>
+<li><strong>瞬電とかでWindowsが落ちた後、下記のメッセージが出て起動しなくなる。</strong></li>
+次のファイルが存在しないかまたは壊れているため、Windows を<br>
+起動できませんでした:<br>
+<Windows root>\system32\hal.dll.<br>
+上記のファイルをインストールしてください。<br>
+<br>
+解決方法：修復インストール<br>
+</ul>
+
+<hr>
+
+<ul>
+<li><strong>FreeBSD4.6.2Rでのftpクライアントの設定</strong></li>
+ディフォルトだと /etc/login.conf 中で、FTP_PASSIVE_MODE=YES と設定され
+ているが、これだと外部にftpで接続した際、サーバによっては ls, get などが使えない。<br>
+このため、.cshrcなどでunsetenv FTP_PASSIVE_MODE とする。<br>
+<br>
+※ちなみにportsはftpクライアントを使うので、この設定ができていないと
+makeで外部のftpサーバに取りに行けない。<br>
+ルータのせい？cvsupが使うport(5999)があいていない？<br>
+<br>
+</ul>
+
+<hr>
+
+<ul>
+<li><strong>cvsupによるportsの自動更新</strong></li>
+<br>
+>cd /usr/ports/net/cvsup<br>
+>make install<br>
+>cp /usr/share/examples/cvsup/ports-supfile /usr/local/etc<br>
+コピーしたsupfileを編集。<br>
+ファイル中で *default host=cvsup.jp.FreeBSD.org に書き換える。<br>
+>rehash<br>
+<font color="Red">>cvsup -g -L 2 /usr/local/etc/ports-supfile</font><br>
+にて更新開始。<br>
+<br>
+<a href="http://www.fkimura.com/cvsup1.html">参考1</a><br>
+<br>
+で、cvsup自体をportsで更新<br>
+>cd /usr/ports/net/cvsup<br>
+>make<br>
+>cvsup -v (現在インストールされているバージョンを確認)<br>
+>make deinstall<br>
+>make reinstall<br>
+>cvsup -v (新しいバージョンが入ったか確認)<br>
+</ul>
+
+<hr>
+
+<ul>
+<li><strong>XOOPS向けのPHP4.3.11の導入</strong></li>
+<br>
+>cd /usr/ports/www/mod_php4<br>
+>make install<br>
+>cp /usr/local/etc/php.ini-dist /usr/local/etc/php.ini<br>
+/usr/local/etc/<a href="php.ini">php.ini</a> に修正<br>
+<br>
+output_handler = mb_output_handler<br>
+register_globals = On<br>
+mbstring.language = Japanese<br>
+mbstring.internal_encoding = EUC-JP<br>
+mbstring.http_input = auto<br>
+mbstring.http_output = EUC-JP<br>
+mbstring.substitute_character = none;<br>
+mbstring.func_overload = 0<br>
+<br>
+php4-extensions のインストール<br>
+>cd /usr/ports/lang/php4-extensions<br>
+>make (PCRE(Perl Compatible Regular Expressions)が選択されているか確認)<br>
+>make install<br>
+<br>
+※PCREが入っていないと"Fatal error: Call to undefined function:
+preg_match() in /XXX/install/index.php on line 1254"と言われたり、XOOPSのインストール中でのDBチェック画面が真っ白になったりする。
+<a href="http://jp.xoops.org/modules/newbb/viewtopic.php?topic_id=5873&forum=15">参考1</a><br>
+<br>
+Apache2の設定ファイル /usr/local/etc/apache2/httpd.conf を修正<br>
+DirectoryIndex に index.php を追加。<br>
+AddType application/x-httpd-php .php<br>
+AddType application/x-httpd-php-source .phps<br>
+LoadModule php4_module libexec/apache/libphp4.so<br>
+をそれぞれ追加。<br>
+<br>
+<a href="http://www.fkimura.com/xoops0.html">参考2</a>
+</ul>
+
+<hr>
+
+<ul>
+<li><strong>XOOPS向けのMySQL4.0.24の導入</strong></li>
+<br>
+4.0.25だと何故かうまくいかなかった（XOOPSのインストール中でのDBチェック画面が真っ白になる:PCREがうまく入らなかった？）ので、<strong>3.23.59</strong>に変更。<br>
+>cd /usr/ports/databases/mysql40-server<br>
+>make WITH_APACHE2=yes WITH_CHARSET=ujis WITH_XCHARSET=all<br>
+>make install<br>
+<br>
+<a href="http://www.fkimura.com/xoops0.html">参考1</a>
+インストール後の設定<br>
+>cd /usr/local/bin<br>
+>./mysql_install_db --user=mysql (データベースの作成)<br>
+mysqlの起動<br>
+>cd /usr/local/etc/rc.d<br>
+<del><a href="mysql-server.sh">mysql-server.sh</a>に修正(: ${mysql_enable="YES"}にするだけ)</del><br>
+/etc/rc.conf に mysql_enable="YES" を追加。<br>
+<font color="Red">>./mysql-server.sh start</font><br>
+>mysqladmin -u root password XXX<br>
+>mysql -u root -p<br>
+mysql>GRANT ALL PRIVILEGES ON *.* TO hoge@localhost IDENTIFIED BY 'XXXX' WITH GRANT OPTION; (hogeというアカウントの作成とXXXXというパスワードの設定)<br>
+>mysql -u hoge -p (hogeでログイン)<br>
+mysql>CREATE DATABASE hogehoge; (hogehogeデーターベースの作成)<br>
+<a href="http://www.bitscope.co.jp/tep/MySQL/quickMySQL.html">参考</a><br>
+</ul>
+
+<hr>
+
+<ul>
+<li><strong>XOOPS 2.0.9.2 の導入</strong></li>
+<br>
+>~/public_html/ に html/ のファイルを展開。<br>
+パーミッションの変更<br>
+>chmod 707 uploads/ cache/ templates_c/<br>
+>chmod 606 mainfile.php<br>
+Webブラウザから ~/ もしくは ~/install にアクセス<br>
+</ul>
+
+<hr>
+
+<ul>
+<li><strong>XOOPSのSSLログインの設定</strong></li>
+<br>
+1. アーカイブ展開ディレクトリにあるログイン用PHPファイル 
+xoops-2.0.9.2-ja-eucjp/extras/login.php の5行目を修正。<br>
+2. $path = '/home/susu/public_html/'; などxoopsファイルのあるディレクトリ
+を指定。<br>
+3. 修正したlogin.php を /home/susu/public_html/ にコピー。<br>
+4. xoopsの管理メニューの一般設定で、「SSLログインページへのURL」にlogin.phpをフルパスで指定。<br>
+</ul>
+
+<hr>
+
+<ul>
+<li><strong>dvipdfm で PDF を作るときに付けるべき？オプション</strong><br>
+<p> &gt;dvipdfm -p a4 -x 20.4mm -y 20.4mm -z 0 -r 600 -e -c -V 4 XXX.dvi</p>
+<table summary="dvipdfm" border="3">
+<tr><th>Option</th><th>Mean</th></tr>
+<tr><td>-p a4</td><td>paper size を A4 にする（デフォルト）</td></tr>
+<tr><td>-x 20.4mm</td><td>紙の左端からのマージンを20.4mmにする</td></tr>
+<tr><td>-y 20.4mm</td><td>紙の上端からのマージンを20.4mmにする</td></tr>
+<tr><td>-z 0</td><td>埋め込み画像の圧縮をしない設定？</td></tr>
+<tr><td>-r 600</td><td>解像度を600dpiにする（デフォルト）</td></tr>
+<tr><td>-e</td><td>部分フォント？を埋め込まなくする</td></tr>
+<tr><td>-c</td><td>白黒出力にする</td></tr>
+<tr><td>-V 4</td><td>PDF Version 1.4 にする</td></tr>
+</table>
+<p>
+オプションを指定しない（デフォルト）でPDFを作ると、マージンが大きすぎるような気
+がするので、上記のような指定をした方がいいと思います。でも、CorelDRAWで出力したepsを埋め込んだPDFを作ると、画面で見たときに消えることがあるのが未解決・・まあ、再描画すれば見えるのだけど。
+<p>
+</ul>
+
+<hr>
+
+<ul>
+<li><strong>dviout (for Windows)でeps/bmp以外の画像を表示する方法</strong></li><br>
+<img src="cg/dviout_option1.bmp"><br>
+Option -> Setup Parameters -> Graphic 中の、spi: に Susieプラグインのあるパスを設定する。<br>
+設定ができたら「Save」を忘れずに。<br>
+また、GIF:の設定を「BMP(full color)」としておくと、BMPがカラー表示される。<br>
+<a href="http://www.klavis.info/figure.html#otype">参考</a>
+</ul>
+
+<hr>
+
+<ul>
+<li><strong>bbファイルを一括作成する方法</strong></li><br>
+dviout付属のcreatebbコマンドを使う。<br>
+"Browse..."で変換元の画像ファイルのあるディレクトリを指定して、"Create BB file"で一括作成可能。
+</ul>
+
+<hr>
+
+<ul>
+<li><strong>Windows版のTeX環境 (<a href="http://www.fsci.fuk.kindai.ac.jp/kakuto/win32-ptex/" target="_top">W32TeX</a>)で、BMP画像ファイルを埋め込んでPDFを作成する方法</strong></li><br>
+\usepackage[dvipdfm<font class="red">x</font>]{graphicx,color}<br>
+</ul>
+
+<hr>
+
+<ul>
+<li><strong>Windows版のTeX環境 (<a href="http://www.fsci.fuk.kindai.ac.jp/kakuto/win32-ptex/" target="_top">W32TeX</a>)で、eps形式以外の画像ファイルを埋め込む場合の追加設定</strong></li><br>
+
+<ol>
+<li><a href="http://akagi.ms.u-tokyo.ac.jp/dvitest.html" target="_top">dviout</a>をインストールしたディレクトリ以下の"\GRAPHIC\LATEX2E\dviout.def"をTeXをインストールしたディレクトリ以下"\tex\latex\graphics"にコピーする。</li>
+<li>TeXをインストールしたディレクトリ以下"\tex\latex\misc"に 井上氏の<a href="http://www.ns.musashi-tech.ac.jp/~inoue/Pages/TeX/mediabb.sty.html" target="_top">mediabb.sty</a> を追加。</li>
+</ol><br>
+以上により、本文中で<br>
+<br>
+\usepackage[dviout]{graphicx,color}<br>
+%\usepackage[dvipdfm]{graphicx,color} pdf化する場合はこっち<br>
+\usepackage{mediabb}<br>
+\includegraphics{imagefile}<br>
+<br>
+として、-shell-escape オプションを付けてコンパイルすることで、
+bbファイルが自動生成され、eps/pdf の使い分けが容易に行える。<br>
+<a href="http://oku.edu.mie-u.ac.jp/~okumura/texwiki/?PDF%E3%81%AE%E4%BD%9C%E3%82%8A%E6%96%B9#l580b75f" target="_top">参考1</a>,
+<a href="http://oku.edu.mie-u.ac.jp/~okumura/texwiki/?TeX%E5%85%A5%E9%96%80%2F%E5%9B%B3" target="_top">参考2</a>,
+<a href="http://pinna.cside4.jp/tips/latex/dvipdfm.html" target="_top">参考3</a>,
+<a href="http://www.iir.me.ynu.ac.jp/~maeda/comp/pdftips.html" target="_top">参考4</a>
+</ul>
+
+<hr>
+
+<ul>
+<li><strong>dvipskとAdobe Acrobat Distiller で PDF を作るときに指定すべき？オプ
+ション</strong><br>
+全ての図はeps形式で埋め込む。
+<p>
+>dvipsk -Ppdf -o XXX.ps XXX.dvi
+</p>
+でpsファイルを作成し、Distiller (Acrobat Distiller 5.0)で下記の指定をする。(記載
+のないものはディフォルト値, A4サイズで出力する場合。)
+<table summary="Distiller" border="3">
+<tr><th>ジョブオプション</th><th>値</th></tr>
+<tr><td>互換性のある形式</td><td>Acrobat 5.0 (PDF 1.4)</td></tr>
+<tr><td>Web表示用に最適化</td><td>チェック</td></tr>
+<tr><td>幅</td><td>21.0cm</td></tr>
+<tr><td>高さ</td><td>29.7cm</td></tr>
+<tr><td>圧縮</td><td>適時調整</td></tr>
+<tr><td>すべてのフォントを埋め込む</td><td>チェック</td></tr>
+<tr><td>サブセットの全フォントに対する割合</td><td>チェック(100%)</td></tr>
+</table>
+</ul>
+
+<hr>
+
+<a href="/"><img class="margin10R" src="/susulogo.png" width="88" height="31" alt="Made by Susutawari"></a>
+</body>
+</html>

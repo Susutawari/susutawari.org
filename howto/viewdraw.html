@@ -1,0 +1,335 @@
+<!Doctype html Public "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<title>ViewDrawとHDLの相互変換 (Made by Susutawari)</title>
+<link rel="stylesheet" href="../susu.css" type="text/css">
+<link rev="Made" href="mailto:susu@susutawari.org">
+<link rel="contents" href="index.html">
+</head>
+<body>
+<basefont size="3">
+
+<h2>ViewDraw (ePD DxDesinger) とHDLの相互利用</h2>
+<div align="center">
+<a href="ViewDraw_Screen1.png"><img src="ViewDraw_Screen1s.png" width="420" height="302" alt="ViewDraw_ScreenShot"></a>
+</div>
+<br>
+現<a href="http://www.mentor.com/" target="_top">MentorGraphics社</a>（旧ViewLogic社、前Innoveda社）の回路設計ツールである、旧WorkViewOffice中の<strong>ViewDraw</strong>（現名称は、eProduct Designer中の<strong>DxDesigner？</strong>）で作った回路図をEDIFに変換して、HDLで利用したり、逆にHDLで書かれたモジュールをViewDrawの回路図中に埋め込む方法です。最近ではHDL(Hardware Description Language)が主流であり、回路設計ツール（回路図エントリ）を使う人は減ってきたようですが、回路図による設計では、HDLで設計される場合に比べ、よりよい回路（回路規模が小さく、高速な回路）が生成できるため、まだまだ現役です。（<a href="../links.html"><em>とある研究所</em></a>でも使用されています。）筆者はこのような利点とは関係なく、とにかく<strong class="red">回路図による設計が好き</strong>という理由だけで使っています。ときどき、「回路図で１００万ゲートは記述できないだろう。」という方がいますが、ずばり、<strong>描けます！</strong> それなのになんでHDLとのインターフェースの話かというと、
+
+<ul>
+<li>そうは言っても世の中HDLが主流らしいので、インターフェース（相互利用方法）がないと心配。</li>
+<li>自分で使うのではなく、僕の描いた回路モジュールを他の人に使ってもらうため。<span class="red"><a href="/">（某プロジェクト進行中!!）</a></span></li>
+<li>回路図エントリツール(ViewDraw)の布教</li>
+<li>HDLのいいところも使うかも。</li>
+</ul>
+といったところでしょうか・・ということで、回路図エントリーを使わない人には関係のない話（しかもViewDraw &amp; <a href="http://www.xilinx.co.jp/" target="_top">XILINX</a> ISEに固有の話）です・・^^;
+
+<hr>
+
+解説内容は以下の３つです。
+<ol>
+<li><a href="#SECTION1">HDLモジュールをViewDraw（回路図）中で使う方法</a></li>
+<li><a href="#SECTION2">ViewDraw（回路図）モジュールをVHDL中で使う（EDIFモジュールをVHDL中で使う）方法<br>＜Verilogでも似てるはず＞</a></li>
+<li><a href="#SECTION3">EDIFモジュールをViewDraw（回路図）中で使う方法</a></li>
+</ol>
+
+<div align="center">
+<strong>各ツールのバージョン</strong>
+<table summary="Tools Version" border="2">
+ <tr><th></th><th>製品名</th><th>バージョン</th></tr>
+ <tr><td rowspan="2">回路図エントリツール</td><td>eProduct Designer</td><td>Ver.3.0</td></tr>
+ <tr><td>ViewDraw (DxDesigner)</td><td>Ver.8.1.0</td></tr>
+ <tr><td>インプリメンテーションツール</td><td>ISE Foundation</td><td>5.2.03i</td></tr>
+ <tr><td>HDL論理合成ツール</td><td>XST</td><td>上記ISE付属</td></tr>
+</table>
+</div>
+
+<br>
+<br clear="all">
+<hr>
+
+<h3 id="SECTION1">1. HDLモジュールをViewDraw（回路図）中で使う方法</h3>
+<div align="center">
+<img src="HDL_IN_VIEW_s.png" width="600" height="243" alt="HDL in ViewDraw">
+</div>
+<p>
+これはDxDesignerがウイザードを持っているので、それを使って簡単にできます。
+注意点は、
+</p>
+<ul class="orange">
+<li>ePD Ver.2.0だったか？はバグがあってうまく動かない（パッチが出てた）</li>
+<li>ISEでインプリメントする際、<span class="red">オプション設定（２箇所）</span>をすること</li>
+<li>HDLソースはインプリメントの前に、予め合成しておくこと（ISEのプロジェクトは、HDL用とEDIF用に、計２つ作る必要あり）</li>
+</ul>
+です。ちなみに、ISEで設定しておかなければならない<span class="red">オプション</span>とは、
+<ul>
+<li>"Synthesize" のプロパティ中の "Xilinx Specific Options" にある "Add I/O Buffers" のチェックをはずす</li>
+<li>"Implement Design" のプロパティ中の "Translate Properties" にある "Macro Search Path" に、埋め込むHDLモジュールのファイル（HDLを合成したファイル）のあるディレクトリを指定する</li>
+</ul>
+です。
+
+"Synthesize" のプロパティでちゃんと設定しないと、ISEの「Translation Report」で、<br>
+<br>
+<table summary="Error-Code1" border="3" align="center">
+ <tr><td style="text-align: left">
+ <pre>
+ <code>
+ ERROR:NgdBuild:455 - logical net '$XXX' has multiple drivers. The possible
+    drivers causing this are pin O on block $XX with type IBUF, pin PAD on block
+    $XXX with type PAD
+ WARNING:NgdBuild:463 - input pad net '$XXX' has an illegal input buffer
+ ERROR:NgdBuild:466 - input pad net '$XXX' has illegal connection. Possible pins
+    causing this are pin O on block $XX with type IBUF
+ ERROR:NgdBuild:467 - output pad net 'X' has an illegal buffer
+                                        ．
+                                        ． 
+                                        ．
+ </code>
+ </pre>
+ </td></tr>
+</table>
+
+<br>
+
+"Implement Design" のプロパティをちゃんと設定しなかったり、予めHDLを合成せずにインプリメンテーションを実行すると、<br>
+<br>
+<table summary="Error-Code2" border="3" align="center">
+ <tr><td style="text-align: left">
+ <pre>
+ <code>
+    ERROR:NgdBuild:604 - logical block '$XXX' with type 'XXXX' could not be
+    resolved. A pin name misspelling can cause this, a missing edif or ngc file,
+    or the misspelling of a type name. Symbol 'XXXX' is not supported in
+    target 'ターゲットデバイス名'.
+ </code>
+ </pre>
+ </td></tr>
+</table>
+
+<br>
+とか怒られます。
+
+<h4>手順：</h4>
+<dl>
+ <dt><em>ISEにて</em>
+ <dd><ol>
+      <li>ISEにて、「ファイル」-&gt;「新規プロジェクト」でHDL用のプロジェクトを作成。ここで、"Design Flow"を「XST VHDL」若しくは「XST Verilog」にすること</li>
+      <li>「プロジェクト」-&gt;「新規ソース」或いは「ソースの追加」或いは「ソースのコピー追加」にてHDLファイルを作成／追加</li>
+      <li class="red">"Synthesize" のプロパティ中の "Xilinx Specific Options" にある "Add I/O Buffers" のチェックをはずす</li>
+      <li>HDLを論理合成</li>
+      <hr>
+     </ol>
+ <dt><em>ViewDrawにて</em>
+ <dd><ol start="5">
+      <li>ViewDraw(DxDesigner)で「File」-&gt;「New」-&gt;「Symbol Wizard」を選択し、シンボル名を入力</li>
+      <li>"Symbol Name:", "Library Alias:"はそのまま、"Underlying HDL Model"は対象HDLに合わせて、「VHDL (Import from VHDL File)」若しくは「Verilog (Import from Verilog File)」を選択（選択すると"Symbol Name:"が無効に・・）</li>
+      <li>"Physical Aspects"中の各値は任意、"Include PCB Layout Attributes"のチェックをはずす。"Multiple symbols.."もはずしたままでよい</li>
+      <li>"VHDL/Verilog File Name:"に対象のHDLソースファイルを指定（横の「...」から参照可能）</li>
+      <li>"VHDL/Verilog Entity Name:"に各ソースのエンティティ名を入力</li>
+      <li>正しいエンティテイ名を入力すると、自動的にHDLソースファイルからライブラリ情報など</li>
+が読み込まれる（結果：「Symbol Attributes」に表示）問題なければ、特にいじる必要もないので次へ（パラメータの抽出過程は１つ戻ると"Status Message:"中で確認可能。エラーの場合はHDLソースが間違ってる可能性大）</li>
+      <li>シンボルが表示されるので、問題なければそのまま次へ（シンボル形状は通常のシンボルと同様に後から編集可能）</li>
+      <li>もう一度シンボルが表示される。"Select a symbol:" はそのままでよい</li>
+      <li>「完了」ボタンを押して、シンボル生成完了</li>
+      <li>生成したHDLモジュールを用いた回路図を作成（最上位で入出力パッドを含む）</li>
+      <li>通常通りEDIFを生成（「Tools」-&gt;「Export EDIF」-&gt; "EDIF Netlist Writer"を使用）</li>
+      <hr>
+     </ol>
+ <dt><em>ISEにて</em>
+ <dd><ol start="16">
+      <li>ISEにて、「ファイル」-&gt;「新規プロジェクト」でプロジェクトを作成。ここで、"Design Flow"を「EDIF」にすること。またHDL用のプロジェクトがあるディレクトリは指定できない</li>
+      <li>「プロジェクト」-&gt;「ソースの追加」で、この「HDLモジュールを用いた最上位回路図から生成したEDIFファイル」を追加</li>
+      <li class="red">"Implement Design" のプロパティ中の "Translate Properties" にある "Macro Search Path" に、埋め込むHDLモジュールのファイル（HDLを合成したファイル）のあるディレクトリを指定する</li>
+      <li>インプリメンテーションを実行して完成</li>
+     </ol>
+</dl>
+<hr>
+
+<h3 id="SECTION2">2. ViewDraw（回路図）モジュールをVHDL中で使う（EDIFモジュールをVHDL中で使う）方法</h3>
+<div align="center">
+<img src="VIEW_IN_HDL_s.png" width="600" height="243" alt="ViewDraw in HDL">
+</div>
+<p>
+こっちはウイザードなどは無いので手作業になり、ちょっとめんどう（VHDLのエンティティ記述が沢山あって大変）です。あと、回路図モジュールをVHDL中で使うといっても、直接呼び出せるわけではなく、EDIFに変換して、これをブラック・ボックスとして使用するものです。
+注意点は、
+</p>
+<ul>
+ <li><font class="Red">ViewDrawでシンボルを作るのを忘れずに！（これが分からずにつまずきました。）</font></li>
+ <li>"Implement Design" のプロパティ中の "Translate Properties" にある "Macro Search Path" に、埋め込む回路モジュールのEDIFファイルのあるディレクトリを指定する（これは、「1. HDLモジュールをViewDraw（回路図）中で使う」の手順と同様）</li>
+</ul>
+です。
+
+<h4>手順：</h4>
+<dl>
+ <dt><em>ViewDrawにて</em>
+ <dd><ol>
+      <li>ViewDraw(DxDesigner)でまず、埋め込み対象となる回路モジュールを作成する。回路図は通常のモジュールと同様に、<span class="red">シンボルも作成</span>し、I/O PAD や I/Oバッファは含めてはいけません。ネットに付けた名前で、かつシンボルのピンとして定義したものがVHDLで扱うポート名となります。</li>
+      <li>回路モジュールからEDIFを生成（「Tools」-&gt;「Export EDIF」-&gt; "EDIF Netlist Writer"を使用）</li>
+      <hr>
+     </ol>
+ <dt><em>ISEにて</em>
+ <dd><ol start="3">
+      <li>ISEにて、「ファイル」-&gt;「新規プロジェクト」でVHDL用のプロジェクトを作成。ここで、"Design Flow"を「XST VHDL」にすること</li>
+      <li>「プロジェクト」-&gt;「新規ソース」或いは「ソースの追加」或いは「ソースのコピー追加」にて回路モジュールを使用するVHDLファイルを作成／追加</li>
+      <li>呼び出す回路モジュール(EDIF形式)をコンポーネントとして宣言（回路シンボルと同名のポート名を宣言）</li>
+      <li>合成中のWarningが気になる人は下記のblack_box宣言を追加（なくても合成可能）</li><br>
+       <ul>
+        <li>「attribute box_type : string;」をコンポーネント宣言の直前に、</li>
+        <li>「attribute box_type of コンポーネント名 : component is "black_box";」をコンポーネント宣言の直後に</li>
+       </ul>
+       <br>
+それぞれ追加
+複数の回路モジュール（EDIFモジュール）を呼び出す場合は、「attribute box_type : string;」は先頭に一回だけ記述し、「attribute box_type of コンポーネント名 : component is "black_box";」は各コンポーネント毎に後ろに記述する</li>
+      <li>必要に応じて内部信号（signal）宣言し、port map文で各コンポーネントのピン（ポート）を内部信号に接続</li>
+      <li>HDLを論理合成</li>
+      <li class="red">"Implement Design" のプロパティ中の "Translate Properties" にある "Macro Search Path" に、埋め込む回路モジュールのEDIFファイルのあるディレクトリを指定する。</li>
+      <li>インプリメンテーションを実行して完成</li>
+     </ol>
+</dl>
+<hr>
+
+<h3 id="SECTION3">3. EDIFモジュールをViewDraw（回路図）中で使う方法</h3>
+<div align="center">
+<img src="EDIF_IN_VIEW_s.png" width="600" height="243" alt="EDIF in ViewDraw">
+</div>
+<br>
+
+<strong>なんと！これはブラックボックスではなく、EDIFから回路図を生成してくれます！！すごいぃ〜！！！</strong>
+<p> ePD3.0付属の「EDIF Interfaces」だとエラーも出さず（"Output results"では最後にちゃんと"Edifneti Processing Completed ."とか言うくせ）に、Wirファイルを出力してくれない？みたい・・ePD3.1a にしたら、今度は"Output Dir:"に指定したディレクトリ中に"wir"という名前のサブディレクトリがないと怒られる（Logの途中で怒っているのでわかりにくい。一見成功したように見えたが、今度は "Edifneti Processing Completed. With Error(s)." となっていた）。"wir"サブディレクトリを作って、そのサブディレクトリのあるディレクトリを指定するとちゃんと生成された（ファイルが一つできるのではなく、"wir"ディレクトリの中にサブディレクトリとファイルがいろいろ作られる。）
+※ePD3.0で動いたという人がいたら教えてください・・そーしたら違う原因？！
+</p>
+従って、これだけePD3.1aです。
+<div align="center">
+<strong>ツールのバージョン</strong>
+<table summary="Tools Version" border="2">
+ <tr><th></th><th>製品名</th><th>バージョン</th></tr>
+ <tr><td rowspan="2">回路図エントリツール</td><td>eProduct Designer</td><td>Ver.3.1a</td></tr>
+ <tr><td>ViewDraw (DxDesigner)</td><td>Ver.8.2.1</td></tr>
+</table>
+</div>
+
+<ol>
+ <li>EDIF Interfaces の "EDIF Netlist Reader" にて EDIFファイルを Wirファイルに変換</li>
+ <li>ViewGen により回路図とシンボルを生成</li>
+</ol>
+
+<p class="orange">
+注意：ViewDrawで回路作成-&gt;EDIF生成-&gt;EDIFからwir生成-&gt;wirから回路図生成とかやると、生成される回路がどんなものなのか検証できますが、元の回路図を作成するプロジェクト（ディレクトリ）と、EDIFから生成するときのプロジェクトをちゃんと別けておかないと、元の回路図に見事に上書きされてしまいます（した）。^^;;
+</p>
+
+<h4>手順：</h4>
+<dl>
+ <dt><em>EDIF Interfaces</em>
+ <dd><ol>
+      <li>「Tools」-&gt;「Export EDIF」-&gt; "EDIF Netlist Reader" を起動</li>
+      <li>取り込みたいEDIFモジュールのファイル名を「Design Files:」の"Input:"へ、Wirファイルの出力先を"Output Dir:"へ入力（横の"Browse"から参照可能）</li>
+      <li>他は特に設定をいじらずに実行すると、"&lt;&lt;&lt;WARNING&gt;&gt;&gt; - Could not find symbol ..."とか言われるがとりあえず無視。最後の２行で、"Wir Files created: xx", "Edifneti Processing Completed ."となって、"wir"ディレクトリ以下にwirファイルができていれば成功。</li>
+     </ol>
+ <dt><em>ViewGen</em>
+ <dd><ol start="4">
+      <li>Dashboardの「Toolboxes」-&gt;「Board-level(PCB) Design」にある「ViewGen」というプログラムを起動</li>
+      <li>取り込みたいEDIFモジュールのファイル名を「Design Files:」の"Input:"へ、Wirファイルの出力先を"Output Dir:"へ入力（横の"Browse"から参照可能）</li>
+      <li>"Schematic tGeneration Options."の"Generate top level symbol"および、"Generate schematic"にチェック。"Sheet size"はとりあえず"Single Sheet"でよい。これで"Viewgen command line:"は、"viewgen.exe Input名 Output名 -makesym"となるはずなので、これで実行。つまりコマンドラインのプログラムを実行するということか・・</li>
+     </ol>
+</dl>
+<hr>
+
+<h3>最後に</h3>
+<p>
+メンターへの勝手な要望^^;
+</p>
+<ul>
+ <li>ちゃんとマニュアルを整備して欲しい</li>
+ <li><del>サポート・メールでちゃんと回答して欲しい</del></li>
+（親切に対応して頂けるようになりました。）
+ <li><strong>ViewDraw</strong>をもっと宣伝して欲しい</li>
+（現在実はFPGAの論理設計用ではなく、基板の回路設計用に売られているらしい。）
+
+<p>それよりもむしろ、これからはHDL主流だし、こっちはアウトソーシングで攻めてみっかってことで、</p>
+ <br>
+ <li><strong>ViewDraw</strong>をフリー（できたらGPLかLGPL）化して欲しい</li>
+</ul>
+<p align="right">ｂｙ すすたわり (2003.10.27)</p>
+<hr>
+
+<h3>コマンドラインによる方法</h3>
+<p>プロジェクトのディレクトリ構成によっては？シンボルがうまく生成できないことがあり、コマンドラインによる生成だとうまくいったのでその方法について。(VHDLの場合)</p>
+<ol>
+<li> >vhdl2sym を実行</li>
+<li>下記に従い入力</li>
+</ol>
+<table summary="vhdl2sym" border="2">
+<tr>
+<td>Translate library or VHDLfile?[VHDLfile]:</td>
+<td>そのままEnter</td>
+</tr>
+<tr>
+<td>VHDLfile name(s) separated by space:</td>
+<td>変換したいVHDL.vhd</td>
+</tr>
+<tr>
+<td>Generate symbol for only one entity <entity_name>? [ALL]:</td>
+<td>エンティティ名 若しくは そのままEnter</td>
+</tr>
+<tr>
+<td>Prompt for architecture name during translation?[NO]:</td>
+<td>そのままEnter</td>
+</tr>
+<tr>
+<td>Prompt for configuration name during translation?[NO]:</td>
+<td>そのままEnter</td>
+</tr>
+<tr>
+<td>VHDL library <alias> in VHDL attribute? [WORK]:</td>
+<td>SUSUBOX_VIRTEXとか、若しくは そのままEnter</td>
+</tr>
+<tr>
+<td>Make composite symbol with LEVEL=VHDL <yes/no>? [NO]:</td>
+<td>yes</td>
+</tr>
+<tr>
+<td>Add PCB symbol attribute DEVICE=value <yes/no>? [NO]:</td>
+<td>そのままEnter</td>
+</tr>
+<tr>
+<td>Pin spacing value?[10]:</td>
+<td>20</td>
+</tr>
+<tr>
+<td>Pin length value?[10]:</td>
+<td>20</td>
+</tr>
+</table>
+
+<ol start="3">
+<li>エンティティに従ってI/Oピンが読み込まれ、シンボルが生成される。</li>
+</ol>
+<p align="right">ｂｙ すすたわり (2005.10.27 更新。お、ちょうど2年だ)</p>
+
+<hr>
+<table summary="Back Button" border="4" align="center">
+<tr><td><a href="index.html">戻る</a></td></tr>
+</table>
+
+ご意見、ご感想などはこちらまで。
+<address>
+<a href="mailto:susu@susutawari.org">E-mail: susu@susutawari.org</a><br>
+</address>
+
+<hr>
+<div align="center">
+Copyright (C)2003-2005 N.Aibe. All Rights Reserved.
+</div>
+
+<a href="/"><img class="margin10R" src="/susulogo.png" width="88" height="31" alt="Made by Susutawari"></a>
+</body>
+</html>
+
+
+
+
+
+
+

@@ -1,0 +1,250 @@
+<!Doctype html Public "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<title>Made by Susutawari - Memos of VHDL</title>
+<link rel="stylesheet" href="susu.css" type="text/css">
+<link rev="Made" href="mailto:susu@susutawari.org">
+<link rel="Index" href="../index.html">
+</head>
+<body>
+<p>
+Last up date:
+<!--#echo var="LAST_MODIFIED"-->
+</p>
+<basefont size="3">
+<font size="+1"><strong>VHDLメモ</strong></font>
+<hr>
+
+<ul>
+<li>
+<strong>ISEのプロジェクトディレクトリを変更（別のPCに移行など）したときに、iMPACTがbitファイルを見つけられなくなる。</strong><br>
+原因：iMPACTの起動設定ファイル(*.ipf)にパスが保存されるので、これが異なると見つけられない。<br>
+対策：該当の*.ipfを削除する。
+</li>
+
+<hr>
+
+<li>
+<strong>XSTのディフォルト・オプションを変更しておかないと、FFがIOBにパックされずに、合成毎にタイミングがずれることがある。</strong><br>
+ISE(7.1.04i)のプロセス・ツリー内で、"Synthesize XST"を右クリックして、"Properties" -> "Xilinx Specific Options" -> "Pack I/O Registers into IOBs"を「AUTO」->「YES」に変更しておく。この設定を変更しておかないと（AUTOのままだと）、
+<pre class="code">
+entity XXX is
+ Port ( A : in std_logic;
+        B : out std_logic);
+
+architecture Behavioral of XXX is
+
+ signal BUF : std_logic;
+
+begin
+
+ process (CLK)
+ begin
+  if rising_edge (CLK) then
+   BUF <= A;
+   B <= BUF;
+  end if;
+ end process;
+
+end Behavioral;
+</pre>
+で、"BUF"を観測しようとして、ロジアナ（オシロ）を当てる為の外部観測ピン"TestPort"を追加するため、
+<pre class="code">
+entity XXX is
+ Port ( A : in std_logic;
+        B : out std_logic;
+        <font class="red">TestPort : out std_logic);</font>
+
+architecture Behavioral of XXX is
+
+ signal BUF : std_logic;
+ <font class="red">signal TestPort : std_logic;</font>
+
+begin
+
+ process (CLK)
+ begin
+  if rising_edge (CLK) then
+   BUF <= A;
+   B <= BUF;
+   <font class="red">TestPort <= BUF;</font>
+  end if;
+ end process;
+
+end Behavioral;
+</pre>
+などとすると、配置状況（ピンアサインの位置や他の回路ブロックとの関係など）によってはFFがIOB内ではなく、LUTのものが使われてしまい、結果として"BUF"に観測ピンをアサインしたときと、しないときで遅延が変わってしまうことがあり、危険。観測ピンならまだ可観測だが、内部ロジックで分岐している場合にはディバッグ困難？！つまり、<font class="red">さっきまで動いていたところが、ロジック上無関係な回路をいじることで（タイミングがおかしくなり）動かなくなる可能性がある。</font>
+</li>
+
+<hr>
+
+<li>
+<strong>値の表記方法1 (10進数の 243 の表記例)</strong><br>
+<table summary="Value Format" border="2">
+<tr><td></td><td>VHDL87</td><td>VHDL97</td></tr>
+<tr><td>2進数表記</td><td>"11110011"</td><td>"11110011"</td></tr>
+<tr><td>16進数表記</td><td>不可</td><td>X"F3"</td></tr>
+</table>
+</li>
+<hr>
+
+<li>
+<strong>ISE のエディタを Meadow (Multilingual enhancement to gnu Emacs with ADvantages Over Windows) にするための設定</strong></li>
+<ol>
+ <li><a href="http://www.meadowy.org/">Meadow</a> をインストール</li>
+ <li>Meadow で左側に行番号を表示するために、<a href="http://homepage1.nifty.com/blankspace/emacs/wb-line-number.html">wb-line-number</a> をインストール（Meadowをインストールしたディレクトリ以下の"lispディレクトリ"に、ダウンロードした"wb-line-number.el"をコピーする）</li>
+ <li>環境変数に HOME = .emacsを置くディレクトリ・パス を追加</li>
+ <li>.emacs を <a href=".emacs">.emacs</a> を参考に修正<br>
+（Windowsの標準環境で".emacs"のように"."で始まり、拡張子のないファイルを作るには、Meadowで保存し直すことで作成可能。）</li>
+ <li>ISE(7.1.04i)の"Edit" -> "Preferences" -> "ISE General" -> "Editors"で、
+Text editor の Editor を Custom にして、Command line syntax に 「Meadowのインストールパス\RunMW32.exe $1」を指定。</li>
+ <li>ISE 8.1i以降は「{C:\usr\local\share\meadow\bin\RunMW32.exe} +$2 $1」などと、パスを含めたプログラム名を"{}"で括る必要がある。</li>
+</ol>
+以上により、ISEのソースツリーにあるHDLファイルなどをダブルクリックしたときに、Meadowが起動するようになる。<br>
+参考：<a href="http://irorin.xrea.jp/emacsen/operation.htm">Meadow(emacs)のキー操作一覧1</a>, <a href="http://www.ep.sci.hokudai.ac.jp/~kk/emacs/emacs_key.html">一覧2</a>, <a href="http://www.ems.okayama-u.ac.jp/~sasaki/comp/mule/key-tbl.html">一覧3</a>.
+<hr>
+
+<li>
+<strong>One-Shot Pulse (微分パルス) の生成方法</strong>
+<br>
+<pre class="code">
+process (CLK)
+begin
+ if rising_edge (CLK) then
+  B <= A;
+ end if;
+end process;
+
+C <= A and not B;
+</pre>
+で、入力Aに対するOne-Shot Pulse出力Cが得られる。<br>
+
+<pre class="code">
+process (CLK)
+begin
+ if rising_edge (CLK) then
+  B <= A and not B;
+ end if;
+end process;
+</pre>
+では入力Aをイネーブル入力とする、トグルFFになってしまう。
+</li>
+<hr>
+
+<li>
+<strong>port map文で接続するポート先にはsignalに対する連結演算子を使えない？</strong>
+<pre class="code">
+signal databus_A : std_logic_vector(3 downto 0);
+signal databus_B : std_logic_vector(8 downto 0);
+component XXX port(databus: OUT std_logic_vector(3 downto 0)); end component;
+Instance_name: XXX
+</pre>
+のとき、<br>
+<pre class="code">
+port map (databus => databus_A);
+port map (databus => databus_A(3 downto 0));
+port map (databus => databus_B(7 downto 4));
+port map (databus => "0000");
+port map (databus => "0011");
+port map (databus => '0'&'0'&'0'&'0');
+port map (databus => '0'&'1'&'0'&'0');
+</pre>
+などは可能だが、<br>
+<pre class="code">
+port map (databus => databus_A(3)&databus_A(2)&databus_A(1)&databus_A(0));
+port map (databus => databus_A(3)&'0'&'0'&'0');
+</pre>
+などはダメ。
+</li>
+
+<hr>
+
+<li><strong>CORE Generatorで作ったコアをISEのプロジェクト中に追加する方法</strong>
+<br>
+インスタンシエートしたVHDLファイルの階層下で、"Project" -> "Add Source" にて、
+xxx.xco というファイルを追加する。すると、アイコンの"?"マークが電球マークになって追加される。
+</li>
+<hr>
+
+<li>
+<strong>process文中の動作2</strong>
+<pre class="code">
+process (CLK)
+ if rising_edge (CLK) then
+  B <= A;
+  C <= B;
+ end if;
+end process;
+</pre>
+とした場合、A -> B -> C となるD-FFが2個生成される。<br>
+<font class="red">構文解析されて、勝手にBが消され、C <= A; とはなったりはしない。</font>
+</li>
+
+<hr>
+
+<li>
+<strong>process文中の動作1</strong>
+<br>
+process文中がシーケンシャルというのは、センシティビティ信号の信号遷移単位でのシーケンスではなく、センシティビティ信号遷移直後の信号伝達が文の上からシーケンシャルという意味。わかりにくいな・・うーんと、<font class="red">文の上から順に実行されるんだけど、センシティビティ信号の変化毎に各行が逐次実行されるわけではない</font>ということ。<br>
+<br>
+例：
+<pre class="code">
+process (CLK)
+begin
+ if rising_edge (CLK) then
+
+   A <= '0';
+
+   if B='1' then
+    A <= '1';
+   end if;
+
+ end if;
+end process;
+</pre>
+はBによりAの値が変化するが、<br>
+<pre class="code">
+process (CLK)
+begin
+ if rising_edge (CLK) then
+
+   if B='1' then
+    A <= '1';
+   end if;
+
+   A <= '0';
+
+ end if;
+end process;
+</pre>
+では、AはBによらず常に'0'となる。<br>
+これは、
+<pre class="code">
+process (CLK)
+begin
+ if rising_edge (CLK) then
+
+   A <= '0';
+
+ end if;
+end process;
+</pre>
+若しくは、単に <code>A <= '0';</code> と等価。<br>
+<br>
+<pre class="code">
+process (CLK)
+begin
+ if rising-edge (CLK) then
+  B <= A;
+  D <= C;
+  E <= D;
+ end if;
+end process;
+</pre>
+としたとき、始めの"CLK"の遷移で<code>B <= A;</code>が実行され、次の"CLK"遷移で<code>D <= C;</code>が実行されるわけではない。<font class="red"><code>B <= A; D <= C; E <= D;</code>は全て1回の"CLK"遷移で同時実行される。</font>
+</li>
+</ul>
+</body>
+</html>

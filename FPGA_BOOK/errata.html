@@ -1,0 +1,1392 @@
+<?xml version="1.0" encoding="EUC-JP"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Style-Type" content="text/css" />
+<title>FPGA入門 正誤表</title>
+<link rel="stylesheet" href="/susu.css" type="text/css" />
+<link rel="index" href="../index.html" />
+<link rev="Made" href="mailto:susu@susutawari.org" />
+<link rel="shortcut icon" href="/favicon.ico" />
+</head>
+<body>
+Last up date:
+<!--#echo var="LAST_MODIFIED"-->
+<br />
+<h3>秀和システム「FPGA入門」 正誤表</h3>
+
+<hr />
+<strong>P.125 図4.13〜図4.16中</strong><br />
+誤：SW0<br />
+正：PSW0
+
+<hr />
+<p>
+下記、表5.35〜表5.48までは回路としての誤りはありませんが、UCF(表5.37, 5.38)との対応が取れていません。従って修正量としては、UCFの方をHDL内の信号名に変更する方が少なく簡単ですが、回路図および説明との統一を取るためにHDLの修正内容を記載します。
+</p>
+<strong>P.192 表5.35 FA3_VHDL.vhd</strong><br />
+誤：
+<pre class="code">
+ 1: library IEEE;
+ 2: use IEEE.std_logic_1164.all;
+ 3: use IEEE.std_logic_unsigned.all;
+ 4:
+ 5: entity FA3_VHDL is
+ 6:
+ 7:     port (
+ 8:         A  : in std_logic_vector(2 downto 0);
+ 9:         B  : in std_logic_vector(2 downto 0);
+10:         S  : out std_logic_vector(2 downto 0);
+11:         CO : out std_logic);
+12:
+13: end FA3_VHDL;
+14:
+15: architecture RTL of FA3_VHDL is
+16:
+17:     signal sum : std_logic_vector(3 downto 0);
+18:
+19: begin
+20:
+21:     sum &lt;= ('0' &amp; A) + ('0' &amp; B);
+22:     S &lt;= sum(2 downto 0);
+23:     CO &lt;= sum(3);
+24:
+25: end RTL;
+</pre>
+
+<br />
+正：
+<pre class="code">
+ 1: library IEEE;
+ 2: use IEEE.std_logic_1164.all;
+ 3: use IEEE.std_logic_unsigned.all;
+ 4:
+ 5: entity FA3_VHDL is
+ 6:   
+ 7:    port (
+ 8:        SW0 : in std_logic;
+ 9:        SW1 : in std_logic;
+10:        SW2 : in std_logic;
+11:        SW3 : in std_logic;
+12:        SW4 : in std_logic;
+13:        SW5 : in std_logic;
+14:
+15:        LED0 : out std_logic;
+16:        LED1 : out std_logic;
+17:        LED2 : out std_logic;
+18:        LED3 : out std_logic);
+19:
+20: end FA3_VHDL;
+21:
+22: architecture RTL of FA3_VHDL is
+23:
+24: signal a : std_logic_vector(2 downto 0);
+25: signal b : std_logic_vector(2 downto 0);
+26: signal s : std_logic_vector(3 downto 0);
+27:
+28: begin
+29:
+30:    a &lt;= SW2 &amp; SW1 &amp; SW0;
+31:    b &lt;= SW5 &amp; SW4 &amp; SW3;
+32:    s &lt;= ('0' &amp; a) + ('0' &amp; b);
+33:
+34:    LED0 &lt;= s(0);
+35:    LED1 &lt;= s(1);
+36:    LED2 &lt;= s(2);
+37:    LED3 &lt;= s(3); -- s(3) is CO
+38: 
+39: end RTL;
+</pre>
+(<a href="FA3_VHDL20121003.vhd"><strong>FA3_VHDL20121003.vhd</strong></a>)<br />
+
+<hr />
+<strong>P.193 表5.36 FA3_VERILOG.v</strong><br />
+誤：
+<pre class="code">
+ 1: module FA3_VERILOG(CO, S, A, B);
+ 2: 
+ 3:     input [2:0]  A;
+ 4:     input [2:0]  B;
+ 5:     output       CO;
+ 6:     output [2:0] S;
+ 7: 
+ 8:     assign {CO, S} = A + B;
+ 9: 
+10: endmodule
+</pre>
+
+<br />
+正：
+<pre class="code">
+ 1: module FA3_VERILOG(SW0, SW1, SW2, SW3, SW4, SW5, LED0, LED1, LED2, LED3);
+ 2:
+ 3:    input SW0;
+ 4:    input SW1;
+ 5:    input SW2;
+ 6:    input SW3;
+ 7:    input SW4;
+ 8:    input SW5;
+ 9:    output LED0;
+10:    output LED1;
+11:    output LED2;
+12:    output LED3;
+13:
+14:    assign {LED3, LED2, LED1, LED0} = {SW2, SW1, SW0} + {SW5, SW4, SW3};
+15:
+16: endmodule
+</pre>
+(<a href="FA3_VERILOG20121003.v"><strong>FA3_VERILOG20121003.v</strong></a>)<br />
+
+<hr />
+<strong>P.200 表5.42 FS3_VHDL.vhd</strong><br />
+誤：
+<pre class="code">
+ 1: library IEEE;
+ 2: use IEEE.std_logic_1164.all;
+ 3: use IEEE.std_logic_unsigned.all;
+ 4: 
+ 5: entity FS3_VHDL is
+ 6:     
+ 7:     port (
+ 8:         A  : in  std_logic_vector(2 downto 0);
+ 9:         B  : in  std_logic_vector(2 downto 0);
+10:         BO : out std_logic;
+11:         D  : out std_logic_vector(2 downto 0));
+12: 
+13: end FS3_VHDL;
+14: 
+15: architecture RTL of FS3_VHDL is
+16: 
+17:     signal sub : std_logic_vector(3 downto 0);
+18: 
+19: begin
+20: 
+21:     sub &lt;= ('0' &amp; A) - ('0' &amp; B);
+22:     BO &lt;= sub(3);
+23:     D  &lt;= sub(2 downto 0);
+24: 
+25: end RTL;
+</pre>
+
+<br />
+正：
+<pre class="code">
+ 1: library IEEE;
+ 2: use IEEE.std_logic_1164.all;
+ 3: use IEEE.std_logic_unsigned.all;
+ 4:
+ 5: entity FS3_VHDL is
+ 6:   
+ 7:    port (
+ 8:        SW0 : in std_logic;
+ 9:        SW1 : in std_logic;
+10:        SW2 : in std_logic;
+11:        SW3 : in std_logic;
+12:        SW4 : in std_logic;
+13:        SW5 : in std_logic;
+14:
+15:        LED0 : out std_logic;
+16:        LED1 : out std_logic;
+17:        LED2 : out std_logic;
+18:        LED3 : out std_logic);
+19:
+20: end FS3_VHDL;
+21:
+22: architecture RTL of FS3_VHDL is
+23:
+24:  signal a : std_logic_vector(2 downto 0);
+25:  signal b : std_logic_vector(2 downto 0);
+26:  signal d : std_logic_vector(3 downto 0);
+27:
+28: begin
+29:
+30:    a &lt;= SW2 &amp; SW1 &amp; SW0;
+31:    b &lt;= SW5 &amp; SW4 &amp; SW3;
+32:    d &lt;= ('0' &amp; a) - ('0' &amp; b);
+33:
+34:    LED0 &lt;= d(0);
+35:    LED1 &lt;= d(1);
+36:    LED2 &lt;= d(2);
+37:    LED3 &lt;= d(3); -- d(3) is BO
+38: 
+39: end RTL;
+</pre>
+(<a href="FS3_VHDL20121004.vhd"><strong>FS3_VHDL20121004.vhd</strong></a>)<br />
+
+<hr />
+<strong>P.201 表5.43 FS3_VERILOG.v</strong><br />
+誤：
+<pre class="code">
+ 1: module FS3_VERILOG(A, B, BO, D);
+ 2: 
+ 3:     input [2:0]  A;
+ 4:     input [2:0]  B;
+ 5:     output       BO;
+ 6:     output [2:0] D;
+ 7: 
+ 8:     assign {BO, D} = A - B;
+ 9: 
+10: endmodule
+</pre>
+
+<br />
+正：
+<pre class="code">
+ 1: module FS3_VERILOG(SW0, SW1, SW2, SW3, SW4, SW5, LED0, LED1, LED2, LED3);
+ 2:
+ 3:    input SW0;
+ 4:    input SW1;
+ 5:    input SW2;
+ 6:    input SW3;
+ 7:    input SW4;
+ 8:    input SW5;
+ 9:    output LED0;
+10:    output LED1;
+11:    output LED2;
+12:    output LED3;
+13:
+14:    assign {LED3, LED2, LED1, LED0} = {SW2, SW1, SW0} - {SW5, SW4, SW3};
+15:
+16: endmodule
+</pre>
+(<a href="FS3_VERILOG20121004.v"><strong>FS3_VERILOG20121004.v</strong></a>)<br />
+
+<hr />
+<strong>P.208 表5.47 FS3_SIGN_VHDL.vhd</strong><br />
+誤：
+<pre class="code">
+ 1: library IEEE;
+ 2: use IEEE.std_logic_1164.all;
+ 3: use IEEE.std_logic_unsigned.all;
+ 4: 
+ 5: entity FS3_SIGN_VHDL is
+ 6:     
+ 7:     port (
+ 8:         A  : in  std_logic_vector(2 downto 0);
+ 9:         B  : in  std_logic_vector(2 downto 0);
+10:         BO : out std_logic;
+11:         D  : out std_logic_vector(2 downto 0));
+12: 
+13: end FS3_SIGN_VHDL;
+14: 
+15: architecture RTL of FS3_SIGN_VHDL is
+16: 
+17:     signal sub : std_logic_vector(3 downto 0);
+18: 
+19: begin
+20: 
+21:     sub &lt;= ('0' &amp; A) - ('0' &amp; B);
+22:     BO  &lt;= sub(3);
+23:     D   &lt;= not sub(2 downto 0) + '1' when sub(3) = '1' else
+24:            sub(2 downto 0);
+25: 
+26: end RTL;
+</pre>
+
+<br />
+正：
+<pre class="code">
+ 1: library IEEE;
+ 2: use IEEE.std_logic_1164.all;
+ 3: use IEEE.std_logic_unsigned.all;
+ 4:
+ 5: entity FS3_SIGN_VHDL is
+ 6:   
+ 7:    port (
+ 8:        SW0 : in std_logic;
+ 9:        SW1 : in std_logic;
+10:        SW2 : in std_logic;
+11:        SW3 : in std_logic;
+12:        SW4 : in std_logic;
+13:        SW5 : in std_logic;
+14:
+15:        LED0 : out std_logic;
+16:        LED1 : out std_logic;
+17:        LED2 : out std_logic;
+18:        LED3 : out std_logic);
+19:
+20: end FS3_SIGN_VHDL;
+21:
+22: architecture RTL of FS3_SIGN_VHDL is
+23:
+24:  signal a : std_logic_vector(2 downto 0);
+25:  signal b : std_logic_vector(2 downto 0);
+26:  signal d : std_logic_vector(2 downto 0);
+27:  signal sub : std_logic_vector(3 downto 0);
+28:
+29: begin
+30:
+31:    a &lt;= SW2 &amp; SW1 &amp; SW0;
+32:    b &lt;= SW5 &amp; SW4 &amp; SW3;
+33:    sub &lt;= ('0' &amp; a) - ('0' &amp; b);
+34:    d &lt;= not sub(2 downto 0) + '1' when sub(3) = '1' else
+35:         sub(2 downto 0);
+36:
+37:    LED0 &lt;= d(0);
+38:    LED1 &lt;= d(1);
+39:    LED2 &lt;= d(2);
+40:    LED3 &lt;= sub(3); -- sub(3) is BO
+41: 
+42: end RTL;
+</pre>
+(<a href="FS3_SIGN_VHDL20121004.vhd"><strong>FS3_SIGN_VHDL20121004.vhd</strong></a>)<br />
+
+<hr />
+<strong>P.208 表5.48 FS3_SIGN_VERILOG.v</strong><br />
+誤：
+<pre class="code">
+ 1: module FS3_SIGN_VERILOG(A, B, BO, D);
+ 2: 
+ 3:     input [2:0]  A;
+ 4:     input [2:0]  B;
+ 5:     output       BO;
+ 6:     output [2:0] D;
+ 7: 
+ 8:     wire [3:0]   sub;
+ 9: 
+10:     assign sub = {1'b0, A} - {1'b0, B};
+11:     assign BO = sub[3];
+12:     assign D = sub[3] ? (~sub[2:0] + 1'b1) : sub[2:0];
+13: 
+14: endmodule
+</pre>
+
+<br />
+正：
+<pre class="code">
+ 1: module FS3_SIGN_VERILOG(SW0, SW1, SW2, SW3, SW4, SW5, LED0, LED1, LED2, LED3);
+ 2:
+ 3:    input SW0;
+ 4:    input SW1;
+ 5:    input SW2;
+ 6:    input SW3;
+ 7:    input SW4;
+ 8:    input SW5;
+ 9:    output LED0;
+10:    output LED1;
+11:    output LED2;
+12:    output LED3;
+13: 
+14:    wire [3:0] sub;
+15:
+16:    assign sub = {1'b0, SW2, SW1, SW0} - {1'b0, SW5, SW4, SW3};
+17:    assign LED3 = sub[3];
+18:    assign {LED2, LED1, LED0} = sub[3] ? (~sub[2:0] + 1'b1) : sub[2:0];
+19:
+20: endmodule
+</pre>
+(<a href="FS3_SIGN_VERILOG20121004.v"><strong>FS3_SIGN_VERILOG20121004.v</strong></a>)<br />
+
+<hr />
+<strong>P.222 表5.57 DFF_VHDL.vhd</strong><br />
+誤：
+<pre class="code">
+ 1: library IEEE;
+ 2: use IEEE.std_logic_1164.all;
+ 3: 
+ 4: entity DFF_VHDL is
+ 5:     
+ 6:     port (
+ 7:         SW0   : in  std_logic;
+ 8:         SW1   : in  std_logic;
+ 9:         LED0 : out std_logic);
+10: 
+11: end DFF_VHDL;
+12: 
+13: architecture RTL of DFF_VHDL is
+14: 
+15:     signal led0_reg : std_logic;
+16: 
+17: begin
+18: 
+19:     process (SW1)
+20:     begin
+21:         if (SW1'event and SW1 = '1') then
+22:             led0_reg &lt;= SW0;
+23:         end if;
+24:     end process;
+25: 
+26:     LED0 &lt;= led0_reg;
+27:     
+28: end RTL;
+</pre>
+
+<br />
+正：
+<pre class="code">
+ 1: library IEEE;
+ 2: use IEEE.std_logic_1164.all;
+ 3:
+ 4: library UNISIM;
+ 5: use UNISIM.vcomponents.all;
+ 6:
+ 7: entity DFF_VHDL is
+ 8:    
+ 9:    port (
+10:        SW0   : in  std_logic;
+11:        SW1   : in  std_logic;
+12:        LED0 : out std_logic);
+13:
+14: end DFF_VHDL;
+15:
+16: architecture RTL of DFF_VHDL is
+17:
+18:  signal led0_reg : std_logic;
+19:  signal clk : std_logic;
+20:
+21: begin
+22:
+23:  IBUFG0 : IBUFG
+24:  port map (
+25:   O =&gt; clk,
+26:   I =&gt; SW1
+27:  );
+28:
+29:    process (clk)
+30:    begin
+31:        if (clk'event and clk = '1') then
+32:            led0_reg &lt;= SW0;
+33:        end if;
+34:    end process;
+35:
+36:    LED0 &lt;= led0_reg;
+37:    
+38: end RTL;
+</pre>
+(<a href="DFF_VHDL20121002.vhd"><strong>DFF_VHDL20121002.vhd</strong></a>)<br />
+<p>
+補足： 23行目〜27行目で、IBUFGというXilinxプリミティブを直接呼び出して、SW1入力をIBUFG経由でD-FFのクロック信号(clk)となるように変更しています。これはP.221の回路図、図5.97に示す通りです。IBUFGを追加したことに伴い、内部信号として19行目でclkという信号を追加しています。また、Xilinxプリミティブを使用するためには、4行目〜5行目のlibrary UNISIM; use UNISIM.vcomponents.all; という記述が必要です。
+</p>
+
+<hr />
+<strong>P.222 表5.58 DFF_VERILOG.v</strong><br />
+誤：
+<pre class="code">
+ 1: module DFF_VERILOG(SW0, SW1, LED0);
+ 2: 
+ 3:     input  SW0;
+ 4:     input  SW1;
+ 5:     output LED0;
+ 6: 
+ 7:     reg    LED0;
+ 8: 
+ 9:     always @(posedge SW1) begin
+10:         LED0 &lt;= SW0;
+11:     end
+12: 
+13: endmodule
+</pre>
+
+<br />
+正：
+<pre class="code">
+ 1: module DFF_VERILOG(SW0, SW1, LED0);
+ 2:
+ 3:    input  SW0;
+ 4:    input  SW1;
+ 5:    output LED0;
+ 6:
+ 7:    reg    LED0;
+ 8:    wire   clk;
+ 9:
+10:    IBUFG IBUFG0(
+11:     .O(clk),
+12:     .I(SW1)
+13:    );
+14:
+15:    always @(posedge clk) begin
+16:        LED0 &lt;= SW0;
+17:    end
+18:
+19: endmodule
+</pre>
+(<a href="DFF_VERILOG20121002.v"><strong>DFF_VERILOG20121002.v</strong></a>)<br />
+<p>
+補足： 前述のVHDLの場合と同様に、10行目〜13行目でIBUFGを呼び出しています。またIBUFG追加に伴い、8行目で内部信号としてclkも追加しています。ただし、VHDLのときのようなライブラリの宣言はありません。
+</p>
+
+<hr />
+<strong>P.229 図5.110 DFF2_SCH.sch</strong><br />
+誤：IBUFG<br />
+正：IBUF<br />
+<p>
+補足： 図5.110ではD-FFプリミティブを使用しているわけではないため、IBUFGを使用する必要はありません。
+</p>
+
+<hr />
+<strong>P.230 表5.61 DFF2_VHDL.vhd</strong> <font color="red">(2017.05.07追記)</font><br />
+<p>接続先信号の誤り（2箇所）</p>
+誤：
+<pre class="code">
+1:  library IEEE;
+2:  use IEEE.std_logic_1164.all;
+3:
+4:  entity DFF2_VHDL is
+5:
+6:     port (
+7:         SW0 : in  std_logic;
+8:         SW1 : in  std_logic;
+9:         LED0 : out std_logic);
+10:
+11: end DFF2_VHDL;
+12:
+13: architecture RTL of DFF2_VHDL is
+14:
+15:    signal CLK : std_logic;
+16:    signal D : std_logic;
+17:    signal S1, R1, Q1, nQ1 : std_logic;
+18:    signal S2, R2, Q2, nQ2 : std_logic;
+19:    signal S3, R3, Q, nQ : std_logic;
+20:
+21: begin
+22:
+23:     CLK <= SW1;
+24:     D   <= SW0;
+25:
+26:     R1  <= not CLK;
+27:     S1  <= nQ2;
+28:     Q1  <= not (R1 or nQ1);
+29:     nQ1 <= not (S1 or Q1);
+30:
+31:     R2  <= not D;
+32:     S2  <= not CLK or Q1 ;
+33:     Q2  <= not (R2 or nQ2);
+34:     nQ2 <= not (S2 or Q2);
+35:
+36:     R3 <= nQ2;
+37:     S2 <= Q1;
+38:     Q  <= not (R3 or nQ);
+39:     nQ <= not (S3 or Q);
+40:
+41:     LED0 <= Q;
+42:
+43: end RTL;
+</pre>
+
+<br />
+正：
+<pre class="code">
+1:  library IEEE;
+2:  use IEEE.std_logic_1164.all;
+3:
+4:  entity DFF2_VHDL is
+5:
+6:     port (
+7:         SW0 : in  std_logic;
+8:         SW1 : in  std_logic;
+9:         LED0 : out std_logic);
+10:
+11: end DFF2_VHDL;
+12:
+13: architecture RTL of DFF2_VHDL is
+14:
+15:    signal CLK : std_logic;
+16:    signal D : std_logic;
+17:    signal S1, R1, Q1, nQ1 : std_logic;
+18:    signal S2, R2, Q2, nQ2 : std_logic;
+19:    signal S3, R3, Q, nQ : std_logic;
+20:
+21: begin
+22:
+23:     CLK <= SW1;
+24:     D   <= SW0;
+25:
+26:     R1  <= not CLK;
+27:     S1  <= <font color="red">Q2</font>;
+28:     Q1  <= not (R1 or nQ1);
+29:     nQ1 <= not (S1 or Q1);
+30:
+31:     R2  <= not D;
+32:     S2  <= not CLK or Q1 ;
+33:     Q2  <= not (R2 or nQ2);
+34:     nQ2 <= not (S2 or Q2);
+35:
+36:     R3 <= nQ2;
+37:     <font color="red">S3</font> <= Q1;
+38:     Q  <= not (R3 or nQ);
+39:     nQ <= not (S3 or Q);
+40:
+41:     LED0 <= Q;
+42:
+43: end RTL;
+</pre>
+(<a href="code20170507\DFF2_VHDL.vhd"><strong>DFF2_VHDL.vhd</strong></a>)<br />
+
+<hr />
+<strong>P.231 表5.62 DFF2_VERILOG.v</strong> <font color="red">(2017.05.07追記)</font><br />
+<p>接続先信号の誤り（2箇所）</p>
+誤：
+<pre class="code">
+1:  module DFF2_VERILOG(SW0, SW1, LED0);
+2:
+3:      input SW0;
+4:      input SW1;
+5:      output LED0;
+6:
+7:      wire CLK;
+8:      wire D;
+9:      wire S1, R1, Q1, nQ1;
+10:     wire S2, R2, Q2, nQ2;
+11:     wire S3, R3, Q, nQ;
+12:
+13:     assign CLK = SW1;
+14:     assign D   = SW0;
+15:
+16:     assign R1  = ~CLK;
+17:     assign S1  = nQ2;
+18:     assign Q1  = ~(R1 | nQ1);
+19:     assign nQ1 = ~(S1 | Q1);
+20:
+21:     assign R2  = ~D;
+22:     assign S2  = ~CLK | Q1 ;
+23:     assign Q2  = ~(R2 | nQ2);
+24:     assign nQ2 = ~(S2 | Q2);
+25:
+26:     assign R3 = nQ2;
+27:     assign S2 = Q1;
+28:     assign Q  = ~(R3 | nQ);
+29:     assign nQ = ~(S3 | Q);
+30:
+31:     assign LED0 = Q;
+32:
+33: endmodule
+</pre>
+
+<br />
+正：
+<pre class="code">
+1:  module DFF2_VERILOG(SW0, SW1, LED0);
+2:
+3:      input SW0;
+4:      input SW1;
+5:      output LED0;
+6:
+7:      wire CLK;
+8:      wire D;
+9:      wire S1, R1, Q1, nQ1;
+10:     wire S2, R2, Q2, nQ2;
+11:     wire S3, R3, Q, nQ;
+12:
+13:     assign CLK = SW1;
+14:     assign D   = SW0;
+15:
+16:     assign R1  = ~CLK;
+17:     assign S1  = <font color="red">Q2</font>;
+18:     assign Q1  = ~(R1 | nQ1);
+19:     assign nQ1 = ~(S1 | Q1);
+20:
+21:     assign R2  = ~D;
+22:     assign S2  = ~CLK | Q1 ;
+23:     assign Q2  = ~(R2 | nQ2);
+24:     assign nQ2 = ~(S2 | Q2);
+25:
+26:     assign R3 = nQ2;
+27:     assign <font color="red">S3</font> = Q1;
+28:     assign Q  = ~(R3 | nQ);
+29:     assign nQ = ~(S3 | Q);
+30:
+31:     assign LED0 = Q;
+32:
+33: endmodule
+</pre>
+(<a href="code20170507\DFF2_VERILOG.v"><strong>DFF2_VERILOG.v</strong></a>)<br />
+
+<hr />
+<strong>P.317 5行目</strong><br />
+誤：'S'と'R'が同時に'1'となった場合は不定となりますが図7.47の回路ではこの状態はありません<br />
+正：'S'と'R'が同時に'1'となった場合はP.213の表5.51に示す通り、出力Qは'0'となりますが図7.47の回路ではプルダウン入力となっているため、同時に'1'が入力されることはありません
+
+<hr />
+<strong>P.324 図7.54</strong><br />
+誤：<img src="fig7_54old.png" class="margin40" width="640" height="367" alt="DIFF_TIME_OLD" /><br />
+正：<img src="fig7_54as.png" class="margin40" width="640" height="367" alt="DIFF_TIME_FIXED" />
+
+<p>
+補足： 信号DBが反転しています。信号DAはD-FFで1CLK遅れて取り込まれます。従って、信号DBは信号DAが1CLK遅れたものとなります。この信号DBを反転したものと信号DAとのANDを取ったものが信号DCです。<br />
+CLK信号に付いている矢印は、その立ち上がりエッジでイベントが発生していることを示しています。「誤」の方では3つ目の立ち上がりエッジにも矢印が付いていましたが、このタイミングでは信号DA〜DCに変化は起こらないので削除しました。<br />
+また、信号DAは入力信号ですが、これはCLKの立ち上がりエッジに掛からないタイミングで変化することが前提です（詳細はP.231「セットアップ時間とホールド時間」を参照のこと）。完全同期式回路内であれば、入力信号DAは同じCLK信号で変化するフリップ・フロップの出力となるため、変化点は図のようにCLK信号の立ち上がりエッジの直後となります。
+</p>
+
+<hr />
+<strong>P.352 表7.16 TIMER2_VERILOG.v</strong> <font color="red">(2017.05.07追記)</font>
+<p>32行目のif文の「else」（35行目）の条件抜け</p>
+誤：
+<pre class="code">
+1:  module TIMER2_VERILOG(TRG_ONE, MODE, CLK, R, POUT, POUT_ONE);
+2:
+3:      parameter N  = 8'hFF; // counter_reg を N 進カウンタとする
+4:      parameter BW = 8;     // counter_reg のビット幅
+5:
+6:      input        TRG_ONE;
+7:      input        MODE;
+8:      input        CLK;
+9:      input        R;
+10:     output       POUT;
+11:     output       POUT_ONE;
+12:
+13:     wire         counter_full;
+14:
+15:     reg [BW-1:0] counter_reg;
+16:     reg          pout_reg;
+17:     reg          pout_one_reg;
+18:
+19:     always @(posedge CLK) begin
+20:         if (R == 1'b1) begin
+21:             pout_reg <= 1'b0;
+22:         end
+23:         else if (counter_reg == N-1) begin
+24:             pout_reg <= 1'b0;
+25:         end
+26:         else if (TRG_ONE == 1'b1) begin
+27:             pout_reg <= 1'b1;
+28:         end
+29:     end
+30:
+31:     always @(posedge CLK) begin
+32:         if (R == 1'b1 || counter_reg == N-1 || ((TRG_ONE == 1'b1) && (MODE =
+= 1'b1))) begin
+33:             counter_reg <= {BW{1'b0}};
+34:         end
+35:         else begin
+36:             counter_reg <= counter_reg + 1'b1;
+37:         end
+38:     end
+39:
+40:     assign counter_full = (counter_reg == N-1) ? 1'b1 : 1'b0;
+41:
+42:     always @(posedge CLK) begin
+43:         if (R == 1'b1 || TRG_ONE == 1'b1) begin
+44:             pout_one_reg <= 1'b0;
+45:         end
+46:         else begin
+47:             pout_one_reg <= counter_full;
+48:         end
+49:     end
+50:
+51:     assign POUT = pout_reg;
+52:     assign POUT_ONE = pout_one_reg;
+53:
+54: endmodule
+</pre>
+
+<br />
+正：
+<pre class="code">
+1:  module TIMER2_VERILOG(TRG_ONE, MODE, CLK, R, POUT, POUT_ONE);
+2:
+3:      parameter N  = 8'hFF; // counter_reg を N 進カウンタとする
+4:      parameter BW = 8;     // counter_reg のビット幅
+5:
+6:      input        TRG_ONE;
+7:      input        MODE;
+8:      input        CLK;
+9:      input        R;
+10:     output       POUT;
+11:     output       POUT_ONE;
+12:
+13:     wire         counter_full;
+14:
+15:     reg [BW-1:0] counter_reg;
+16:     reg          pout_reg;
+17:     reg          pout_one_reg;
+18:
+19:     always @(posedge CLK) begin
+20:         if (R == 1'b1) begin
+21:             pout_reg <= 1'b0;
+22:         end
+23:         else if (counter_reg == N-1) begin
+24:             pout_reg <= 1'b0;
+25:         end
+26:         else if (TRG_ONE == 1'b1) begin
+27:             pout_reg <= 1'b1;
+28:         end
+29:     end
+30:
+31:     always @(posedge CLK) begin
+32:         if (R == 1'b1 || counter_reg == N-1 || ((TRG_ONE == 1'b1) && (MODE == 1'b1))) begin
+33:             counter_reg <= {BW{1'b0}};
+34:         end
+35:         else <font color="red">if (pout_reg == 1'b1) begin</font>
+36:             counter_reg <= counter_reg + 1'b1;
+37:         end
+38:     end
+39:
+40:     assign counter_full = (counter_reg == N-1) ? 1'b1 : 1'b0;
+41:
+42:     always @(posedge CLK) begin
+43:         if (R == 1'b1 || TRG_ONE == 1'b1) begin
+44:             pout_one_reg <= 1'b0;
+45:         end
+46:         else begin
+47:             pout_one_reg <= counter_full;
+48:         end
+49:     end
+50:
+51:     assign POUT = pout_reg;
+52:     assign POUT_ONE = pout_one_reg;
+53:
+54: endmodule
+</pre>
+(<a href="code20170507\TIMER2_VERILOG.v"><strong>TIMER2_VERILOG.v</strong></a>)<br />
+
+<hr />
+<strong>P.408 表8.15 SBASE_STATE4_VHDL.vhd</strong> <font color="red">(2017.05.07追記)</font>
+<p>信号名の誤り。STATE0〜3、POUT_ONE0〜3、およびphase0_wire〜phase3_wireは、正しくはSTATE1〜4、POUT_ONE1〜4、およびphase1_wire〜phase4_wire。</p>
+誤：
+<pre class="code">
+1:  library IEEE;
+2:  use IEEE.std_logic_1164.all;
+3:
+4:  entity SBASE_STATE4_VHDL is
+5:
+6:      port (
+7:          CLK       : in  std_logic;
+8:          R         : in  std_logic;
+9:          TRG_ONE   : in  std_logic;
+10:         RDY_IN    : in  std_logic;
+11:         RDY       : out std_logic;
+12:         STATE0    : out std_logic;
+13:         STATE1    : out std_logic;
+14:         STATE2    : out std_logic;
+15:         STATE3    : out std_logic;
+16:         POUT_ONE0 : out std_logic;
+17:         POUT_ONE1 : out std_logic;
+18:         POUT_ONE2 : out std_logic;
+19:         POUT_ONE3 : out std_logic);
+20:
+21: end SBASE_STATE4_VHDL;
+22:
+23: architecture RTL of SBASE_STATE4_VHDL is
+24:
+25:     component SBASE_PGCB2_VHDL
+26:         port (
+27:             CLK      : in  std_logic;
+28:             R        : in  std_logic;
+29:             TRG_ONE  : in  std_logic;
+30:             RDY_IN   : in  std_logic;
+31:             FB       : in  std_logic;
+32:             Q0       : out std_logic;
+33:             Q1       : out std_logic;
+34:             POUT_ONE : out std_logic;
+35:             RDY      : out std_logic);
+36:     end component;
+37:
+38:     signal FB : std_logic;
+39:     signal q0 : std_logic;
+40:     signal q1 : std_logic;
+41:     signal e : std_logic;
+42:     signal pout_one : std_logic;
+43:     signal rdy_wire : std_logic;
+44:     signal phase0_wire : std_logic;
+45:     signal phase1_wire : std_logic;
+46:     signal phase2_wire : std_logic;
+47:     signal phase3_wire : std_logic;
+48:
+49: begin
+50:
+51:     SBASE_PGCB2_VHDL_inst : SBASE_PGCB2_VHDL port map (
+52:         CLK      => CLK,
+53:         R        => R,
+54:         TRG_ONE  => TRG_ONE,
+55:         RDY_IN   => RDY_IN,
+56:         FB       => FB,
+57:         Q0       => q0,
+58:         Q1       => q1,
+59:         POUT_ONE => pout_one,
+60:         RDY      => rdy_wire);
+61:
+62:     FB <= q0 and q1;
+63:     RDY <= rdy_wire;
+64:
+65:     phase0_wire <= (not rdy_wire) and (not R) and (not q1) and (not q0);
+66:     phase1_wire <= (not rdy_wire) and (not R) and (not q1) and (    q0);
+67:     phase2_wire <= (not rdy_wire) and (not R) and (    q1) and (not q0);
+68:     phase3_wire <= (not rdy_wire) and (not R) and (    q1) and (    q0);
+69:
+70:     STATE0 <= phase0_wire;
+71:     STATE1 <= phase1_wire;
+72:     STATE2 <= phase2_wire;
+73:     STATE3 <= phase3_wire;
+74:
+75:     POUT_ONE0 <= pout_one and phase0_wire;
+76:     POUT_ONE1 <= pout_one and phase1_wire;
+77:     POUT_ONE2 <= pout_one and phase2_wire;
+78:     POUT_ONE3 <= pout_one and phase3_wire;
+79:
+80: end RTL;
+</pre>
+
+<br />
+正：
+<pre class="code">
+1:  library IEEE;
+2:  use IEEE.std_logic_1164.all;
+3:
+4:  entity SBASE_STATE4_VHDL is
+5:
+6:      port (
+7:          CLK       : in  std_logic;
+8:          R         : in  std_logic;
+9:          TRG_ONE   : in  std_logic;
+10:         RDY_IN    : in  std_logic;
+11:         RDY       : out std_logic;
+12:         STATE<font color="red">1</font>    : out std_logic;
+13:         STATE<font color="red">2</font>    : out std_logic;
+14:         STATE<font color="red">3</font>    : out std_logic;
+15:         STATE<font color="red">4</font>    : out std_logic;
+16:         POUT_ONE<font color="red">1</font> : out std_logic;
+17:         POUT_ONE<font color="red">2</font> : out std_logic;
+18:         POUT_ONE<font color="red">3</font> : out std_logic;
+19:         POUT_ONE<font color="red">4</font> : out std_logic);
+20:
+21: end SBASE_STATE4_VHDL;
+22:
+23: architecture RTL of SBASE_STATE4_VHDL is
+24:
+25:     component SBASE_PGCB2_VHDL
+26:         port (
+27:             CLK      : in  std_logic;
+28:             R        : in  std_logic;
+29:             TRG_ONE  : in  std_logic;
+30:             RDY_IN   : in  std_logic;
+31:             FB       : in  std_logic;
+32:             Q0       : out std_logic;
+33:             Q1       : out std_logic;
+34:             POUT_ONE : out std_logic;
+35:             RDY      : out std_logic);
+36:     end component;
+37:
+38:     signal FB : std_logic;
+39:     signal q0 : std_logic;
+40:     signal q1 : std_logic;
+41:     signal e : std_logic;
+42:     signal pout_one : std_logic;
+43:     signal rdy_wire : std_logic;
+44:     signal phase<font color="red">1</font>_wire : std_logic;
+45:     signal phase<font color="red">2</font>_wire : std_logic;
+46:     signal phase<font color="red">3</font>_wire : std_logic;
+47:     signal phase<font color="red">4</font>_wire : std_logic;
+48:
+49: begin
+50:
+51:     SBASE_PGCB2_VHDL_inst : SBASE_PGCB2_VHDL port map (
+52:         CLK      => CLK,
+53:         R        => R,
+54:         TRG_ONE  => TRG_ONE,
+55:         RDY_IN   => RDY_IN,
+56:         FB       => FB,
+57:         Q0       => q0,
+58:         Q1       => q1,
+59:         POUT_ONE => pout_one,
+60:         RDY      => rdy_wire);
+61:
+62:     FB <= q0 and q1;
+63:     RDY <= rdy_wire;
+64:
+65:     phase<font color="red">1</font>_wire <= (not rdy_wire) and (not R) and (not q1) and (not q0);
+66:     phase<font color="red">2</font>_wire <= (not rdy_wire) and (not R) and (not q1) and (    q0);
+67:     phase<font color="red">3</font>_wire <= (not rdy_wire) and (not R) and (    q1) and (not q0);
+68:     phase<font color="red">4</font>_wire <= (not rdy_wire) and (not R) and (    q1) and (    q0);
+69:
+70:     STATE<font color="red">1</font> <= phase<font color="red">1</font>_wire;
+71:     STATE<font color="red">2</font> <= phase<font color="red">2</font>_wire;
+72:     STATE<font color="red">3</font> <= phase<font color="red">3</font>_wire;
+73:     STATE<font color="red">4</font> <= phase<font color="red">4</font>_wire;
+74:
+75:     POUT_ONE<font color="red">1</font> <= pout_one and phase<font color="red
+">1</font>_wire;
+76:     POUT_ONE<font color="red">2</font> <= pout_one and phase<font color="red
+">2</font>_wire;
+77:     POUT_ONE<font color="red">3</font> <= pout_one and phase<font color="red
+">3</font>_wire;
+78:     POUT_ONE<font color="red">4</font> <= pout_one and phase<font color="red
+">4</font>_wire;
+79:
+80: end RTL;
+</pre>
+(<a href="code20170507\SBASE_STATE4_VHDL.vhd"><strong>SBASE_STATE4_VHDL.vhd</strong></a>)<br />
+
+<hr />
+<strong>P.410 表8.16 SBASE_STATE4_VERILOG.v</strong> <font color="red">(2017.05.07追記)</font>
+<p>信号名の誤り。STATE0〜3、およびPOUT_ONE0〜3は、正しくはSTATE1〜4、およびPOUT_ONE1〜4。</p>
+誤：
+<pre class="code">
+1:  module SBASE_STATE4_VERILOG(CLK, R, TRG_ONE, RDY_IN, RDY,
+2:                              STATE0, STATE1, STATE2, STATE3,
+3:                              POUT_ONE0, POUT_ONE1, POUT_ONE2, POUT_ONE3);
+4:
+5:      input CLK;
+6:      input R;
+7:      input TRG_ONE;
+8:      input RDY_IN;
+9:
+10:     output RDY;
+11:     output STATE0;
+12:     output STATE1;
+13:     output STATE2;
+14:     output STATE3;
+15:     output POUT_ONE0;
+16:     output POUT_ONE1;
+17:     output POUT_ONE2;
+18:     output POUT_ONE3;
+19:
+20:     wire   q0;
+21:     wire   q1;
+22:     wire   pout_one;
+23:
+24:     SBASE_PGCB2_VERILOG
+25:      SBASE_PGCB2_VERILOG(.CLK(CLK),
+26:                          .R(R),
+27:                          .TRG_ONE(TRG_ONE),
+28:                          .RDY_IN(RDY_IN),
+29:                          .FB(q0 & q1),
+30:                          .Q0(q0),
+31:                          .Q1(q1),
+32:                          .POUT_ONE(pout_one),
+33:                          .RDY(RDY));
+34:
+35:     assign STATE0 = (~RDY & ~R) & ~q1 & ~q0;
+36:     assign STATE1 = (~RDY & ~R) & ~q1 &  q0;
+37:     assign STATE2 = (~RDY & ~R) &  q1 & ~q0;
+38:     assign STATE3 = (~RDY & ~R) &  q1 &  q0;
+39:
+40:     assign POUT_ONE0 = pout_one & STATE0;
+41:     assign POUT_ONE1 = pout_one & STATE1;
+42:     assign POUT_ONE2 = pout_one & STATE2;
+43:     assign POUT_ONE3 = pout_one & STATE3;
+44:
+45: endmodule
+</pre>
+
+<br />
+正：
+<pre class="code">
+1:  module SBASE_STATE4_VERILOG(CLK, R, TRG_ONE, RDY_IN, RDY,
+2:                              STATE<font color="red">1</font>, STATE<font color="red">2</font>, STATE<font color="red">3</font>, STATE<font color="red">4</font>,
+3:                              POUT_ONE<font color="red">1</font>, POUT_ONE<font color="red">2</font>, POUT_ONE<font color="red">3</font>, POUT_ONE<font color="red">4</font>);
+4:
+5:      input CLK;
+6:      input R;
+7:      input TRG_ONE;
+8:      input RDY_IN;
+9:
+10:     output RDY;
+11:     output STATE<font color="red">1</font>;
+12:     output STATE<font color="red">2</font>;
+13:     output STATE<font color="red">3</font>;
+14:     output STATE<font color="red">4</font>;
+15:     output POUT_ONE<font color="red">1</font>;
+16:     output POUT_ONE<font color="red">2</font>;
+17:     output POUT_ONE<font color="red">3</font>;
+18:     output POUT_ONE<font color="red">4</font>;
+19:
+20:     wire   q0;
+21:     wire   q1;
+22:     wire   pout_one;
+23:
+24:     SBASE_PGCB2_VERILOG
+25:      SBASE_PGCB2_VERILOG(.CLK(CLK),
+26:                          .R(R),
+27:                          .TRG_ONE(TRG_ONE),
+28:                          .RDY_IN(RDY_IN),
+29:                          .FB(q0 & q1),
+30:                          .Q0(q0),
+31:                          .Q1(q1),
+32:                          .POUT_ONE(pout_one),
+33:                          .RDY(RDY));
+34:
+35:     assign STATE<font color="red">1</font> = (~RDY & ~R) & ~q1 & ~q0;
+36:     assign STATE<font color="red">2</font> = (~RDY & ~R) & ~q1 &  q0;
+37:     assign STATE<font color="red">3</font> = (~RDY & ~R) &  q1 & ~q0;
+38:     assign STATE<font color="red">4</font> = (~RDY & ~R) &  q1 &  q0;
+39:
+40:     assign POUT_ONE<font color="red">1</font> = pout_one & STATE<font color="red">1</font>;
+41:     assign POUT_ONE<font color="red">2</font> = pout_one & STATE<font color="red">2</font>;
+42:     assign POUT_ONE<font color="red">3</font> = pout_one & STATE<font color="red">3</font>;
+43:     assign POUT_ONE<font color="red">4</font> = pout_one & STATE<font color="red">4</font>;
+44:
+45: endmodule
+</pre>
+(<a href="code20170507\SBASE_STATE4_VERILOG.v"><strong>SBASE_STATE4_VERILOG.v</strong></a>)<br />
+
+<hr />
+<strong>P.413 図8.32 4ステート・コントローラを用いたシーケンサ(SEQ04_SCH.sch)</strong> <font color="red">(2017.05.07追記)</font>
+<p>SBASE_STATE4の出力信号名がSTATE0〜3およびPOUT_ONE0〜3となっているが、これはSTATE1〜4およびPOUT_ONE1〜4の誤り。正しくは下図の通り。</p>
+<img src="code20170507/SEQ04_SCH.png" width="800">
+(<a href="code20170507\SEQ04_SCH.pdf"><strong>SEQ04_SCH.pdf</strong></a>)<br />
+
+<hr />
+<strong>P.414 表8.17 SEQ04_VHDL.vhd</strong> <font color="red">(2017.05.07追記)</font>
+<p>信号名の誤り。STATE0〜3、POUT_ONE0〜3、およびpout_one(0)〜(3)は、正しくはSTATE1〜4、POUT_ONE1〜4、およびpout_one(1)〜(4)。</p>
+誤：
+<pre class="code">
+1:  library IEEE;
+2:  use IEEE.std_logic_1164.all;
+3:
+4:  entity SEQ04_VHDL is
+5:
+6:      port (
+7:          CLK  : in  std_logic;
+8:          PSW0 : in  std_logic;
+9:          LED0 : out std_logic;
+10:         LED1 : out std_logic;
+11:         LED2 : out std_logic;
+12:         LED3 : out std_logic);
+13:
+14: end SEQ04_VHDL;
+15:
+16: architecture RTL of SEQ04_VHDL is
+17:
+18:     component SBASE_STATE4_VHDL
+19:         port (
+20:             CLK       : in  std_logic;
+21:             R         : in  std_logic;
+22:             TRG_ONE   : in  std_logic;
+23:             RDY_IN    : in  std_logic;
+24:             RDY       : out std_logic;
+25:             STATE0    : out std_logic;
+26:             STATE1    : out std_logic;
+27:             STATE2    : out std_logic;
+28:             STATE3    : out std_logic;
+29:             POUT_ONE0 : out std_logic;
+30:             POUT_ONE1 : out std_logic;
+31:             POUT_ONE2 : out std_logic;
+32:             POUT_ONE3 : out std_logic);
+33:     end component;
+34:
+35:     component SBASE_TIMER_CB24RM_VHDL
+36:         port (
+37:             CLK      : in  std_logic;
+38:             R        : in  std_logic;
+39:             TRG_ONE  : in  std_logic;
+40:             MODE     : in  std_logic;
+41:             POUT     : out std_logic;
+42:             POUT_ONE : out std_logic);
+43:     end component;
+44:
+45:     signal rdy_in : std_logic;
+46:     signal pout : std_logic;
+47:     signal pout_one : std_logic_vector(3 downto 0);
+48:     signal trg_one : std_logic;
+49:
+50: begin
+51:
+52:     SBASE_STATE4_VHDL_inst :
+53:         SBASE_STATE4_VHDL port map (
+54:             CLK       => CLK,
+55:             R         => '0',
+56:             TRG_ONE   => PSW0,
+57:             RDY_IN    => rdy_in,
+58:             RDY       => open,
+59:             STATE0    => LED0,
+60:             STATE1    => LED1,
+61:             STATE2    => LED2,
+62:             STATE3    => LED3,
+63:             POUT_ONE0 => pout_one(0),
+64:             POUT_ONE1 => pout_one(1),
+65:             POUT_ONE2 => pout_one(2),
+66:             POUT_ONE3 => pout_one(3));
+67:
+68:     SBASE_TIMER_CB24RM_VHDL_inst :
+69:         SBASE_TIMER_CB24RM_VHDL port map (
+70:             CLK      => CLK,
+71:             R        => '0',
+72:             TRG_ONE  => trg_one,
+73:             MODE     => '0',
+74:             POUT     => pout,
+75:             POUT_ONE => open);
+76:
+77:     rdy_in <= not pout;
+78:     trg_one <= pout_one(0) or pout_one(1) or pout_one(2) or pout_one(3);
+79:
+80: end RTL;
+</pre>
+
+<br />
+正：
+<pre class="code">
+1:  library IEEE;
+2:  use IEEE.std_logic_1164.all;
+3:
+4:  entity SEQ04_VHDL is
+5:
+6:      port (
+7:          CLK  : in  std_logic;
+8:          PSW0 : in  std_logic;
+9:          LED0 : out std_logic;
+10:         LED1 : out std_logic;
+11:         LED2 : out std_logic;
+12:         LED3 : out std_logic);
+13:
+14: end SEQ04_VHDL;
+15:
+16: architecture RTL of SEQ04_VHDL is
+17:
+18:     component SBASE_STATE4_VHDL
+19:         port (
+20:             CLK       : in  std_logic;
+21:             R         : in  std_logic;
+22:             TRG_ONE   : in  std_logic;
+23:             RDY_IN    : in  std_logic;
+24:             RDY       : out std_logic;
+25:             STATE<font color="red">1</font>    : out std_logic;
+26:             STATE<font color="red">2</font>    : out std_logic;
+27:             STATE<font color="red">3</font>    : out std_logic;
+28:             STATE<font color="red">4</font>    : out std_logic;
+29:             POUT_ONE<font color="red">1</font> : out std_logic;
+30:             POUT_ONE<font color="red">2</font> : out std_logic;
+31:             POUT_ONE<font color="red">3</font> : out std_logic;
+32:             POUT_ONE<font color="red">4</font> : out std_logic);
+33:     end component;
+34:
+35:     component SBASE_TIMER_CB24RM_VHDL
+36:         port (
+37:             CLK      : in  std_logic;
+38:             R        : in  std_logic;
+39:             TRG_ONE  : in  std_logic;
+40:             MODE     : in  std_logic;
+41:             POUT     : out std_logic;
+42:             POUT_ONE : out std_logic);
+43:     end component;
+44:
+45:     signal rdy_in : std_logic;
+46:     signal pout : std_logic;
+47:     signal pout_one : std_logic_vector<font color="red">(4 downto 1)</font>;
+48:     signal trg_one : std_logic;
+49:
+50: begin
+51:
+52:     SBASE_STATE4_VHDL_inst :
+53:         SBASE_STATE4_VHDL port map (
+54:             CLK       => CLK,
+55:             R         => '0',
+56:             TRG_ONE   => PSW0,
+57:             RDY_IN    => rdy_in,
+58:             RDY       => open,
+59:             STATE<font color="red">1</font>    => LED0,
+60:             STATE<font color="red">2</font>    => LED1,
+61:             STATE<font color="red">3</font>    => LED2,
+62:             STATE<font color="red">4</font>    => LED3,
+63:             POUT_ONE<font color="red">1</font> => pout_one(<font color="red">1</font>),
+64:             POUT_ONE<font color="red">2</font> => pout_one(<font color="red">2</font>),
+65:             POUT_ONE<font color="red">3</font> => pout_one(<font color="red">3</font>),
+66:             POUT_ONE<font color="red">4</font> => pout_one(<font color="red">4</font>));
+67:
+68:     SBASE_TIMER_CB24RM_VHDL_inst :
+69:         SBASE_TIMER_CB24RM_VHDL port map (
+70:             CLK      => CLK,
+71:             R        => '0',
+72:             TRG_ONE  => trg_one,
+73:             MODE     => '0',
+74:             POUT     => pout,
+75:             POUT_ONE => open);
+76:
+77:     rdy_in <= not pout;
+78:     trg_one <= pout_one(<font color="red">1</font>) or pout_one(<font color="red">2</font>) or pout_one(<font color="red">3</font>) or pout_one(<font color="red">4</font>);
+79:
+80: end RTL;
+</pre>
+(<a href="code20170507\SEQ04_VHDL.vhd"><strong>SEQ04_VHDL.vhd</strong></a>)<br />
+
+<hr />
+<strong>P.415 表8.18 SEQ04_VERILOG.v</strong> <font color="red">(2017.05.07追記)</font>
+<p>信号名の誤り。STATE0〜3、POUT_ONE0〜3、およびpout_one[0]〜[3]は、正しくはSTATE1〜4、POUT_ONE1〜4、およびpout_one[1]〜[4]。</p>
+誤：
+<pre class="code">
+1:  module SEQ04_VERILOG(CLK, PSW0, LED0, LED1, LED2, LED3);
+2:
+3:      input      CLK;
+4:      input      PSW0;
+5:      output     LED0;
+6:      output     LED1;
+7:      output     LED2;
+8:      output     LED3;
+9:
+10:     wire       pout;
+11:     wire [3:0] pout_one;
+12:
+13:     SBASE_STATE4_VERILOG
+14:       SBASE_STATE4_VERILOG(.CLK(CLK),
+15:                            .R(1'b0),
+16:                            .TRG_ONE(PSW0),
+17:                            .RDY_IN(~pout),
+18:                            .RDY(),
+19:                            .STATE0(LED0),
+20:                            .STATE1(LED1),
+21:                            .STATE2(LED2),
+22:                            .STATE3(LED3),
+23:                            .POUT_ONE0(pout_one[0]),
+24:                            .POUT_ONE1(pout_one[1]),
+25:                            .POUT_ONE2(pout_one[2]),
+26:                            .POUT_ONE3(pout_one[3]));
+27:
+28:     SBASE_TIMER_CB24RM_VERILOG
+29:       SBASE_TIMER_CB24RM_VERILOG(.CLK(CLK),
+30:                                  .R(1'b0),
+31:                                  .TRG_ONE(|pout_one),
+32:                                  .MODE(1'b0),
+33:                                  .POUT(pout),
+34:                                  .POUT_ONE());
+35:
+36: endmodule
+</pre>
+
+<br />
+正：
+<pre class="code">
+1:  module SEQ04_VERILOG(CLK, PSW0, LED0, LED1, LED2, LED3);
+2:
+3:      input      CLK;
+4:      input      PSW0;
+5:      output     LED0;
+6:      output     LED1;
+7:      output     LED2;
+8:      output     LED3;
+9:
+10:     wire       pout;
+11:     wire <font color="red">[4:1]</font> pout_one;
+12:
+13:     SBASE_STATE4_VERILOG
+14:       SBASE_STATE4_VERILOG(.CLK(CLK),
+15:                            .R(1'b0),
+16:                            .TRG_ONE(PSW0),
+17:                            .RDY_IN(~pout),
+18:                            .RDY(),
+19:                            .STATE<font color="red">1</font>(LED0),
+20:                            .STATE<font color="red">2</font>(LED1),
+21:                            .STATE<font color="red">3</font>(LED2),
+22:                            .STATE<font color="red">4</font>(LED3),
+23:                            .POUT_ONE<font color="red">1</font>(pout_one[<font color="red">1</font>]),
+24:                            .POUT_ONE<font color="red">2</font>(pout_one[<font color="red">2</font>]),
+25:                            .POUT_ONE<font color="red">3</font>(pout_one[<font color="red">3</font>]),
+26:                            .POUT_ONE<font color="red">4</font>(pout_one[<font color="red">4</font>]));
+27:
+28:     SBASE_TIMER_CB24RM_VERILOG
+29:       SBASE_TIMER_CB24RM_VERILOG(.CLK(CLK),
+30:                                  .R(1'b0),
+31:                                  .TRG_ONE(|pout_one),
+32:                                  .MODE(1'b0),
+33:                                  .POUT(pout),
+34:                                  .POUT_ONE());
+35:
+36: endmodule
+</pre>
+(<a href="code20170507\SEQ04_VERILOG.v"><strong>SEQ04_VERILOG.v</strong></a>)<br />
+
+
+<hr />
+<strong>P.532 4行目</strong><br />
+誤：「8dに加算して、8dの桁が一つ上がる最小の数」なので3dです。<br />
+正：「8dに加算して、8dの桁が一つ上がる最小の数」なので2dです。<br />
+
+<hr />
+<strong>P.532 下から8行目</strong><br />
+誤：<img src="P532_Comp01.png" class="margin40" width="300" height="30" alt="Comp_OLD" /><br />
+正：<img src="P532_Comp01a.png" class="margin40" width="300" height="38" alt="Comp_FIX" /><br />
+<p>
+補足： ここでは2進数の一般式を挙げずに、単に <strong>「2進数1011の1の補数」は各桁の値を反転して「0100b」（通常は頭の'0'は省略）となります。</strong> とした方がわかり易かったかもしれません。
+</p>
+
+</body>
+</html>

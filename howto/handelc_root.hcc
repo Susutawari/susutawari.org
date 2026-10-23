@@ -1,0 +1,64 @@
+/*
+
+ File Name: handelc_root.hcc (same as sc2004c_egen_35p71m.hcc)
+ Prj. Name: sc2004c_egen
+
+ This is a sample code of EDIF importing.
+ Import module name is sc2004c_egen_35p71m.edn that is create from ViewDraw.
+
+ This sample uses
+
+  1. interface
+  2. Current CLK supplies to EDIF Module with "__clock"
+
+ Made by Susutawari (C)2004 N.Aibe  WWW.SUSUBOX.ORG
+
+*/
+
+set clock = external "P92"; // CLK Pin Assign
+
+unsigned 1 x = 0; // Internal Variable for "TRG_ONE"
+interface bus_in(unsigned 1 an_Input) TRG_ONE_IN() with {data={"P209"}}; // Input Pin Assign 
+
+unsigned 1 y; // Internal Variable for "E"
+unsigned 1 z; // Internal Variable for "RDY"
+interface bus_out() E_OUT(unsigned 1 out = y) with {data={"P217"}}; // Output Pin Assign
+interface bus_out() RDY_OUT(unsigned 1 out = z) with {data={"P216"}}; // Output Pin Assign
+
+interface sc2004c_egen_35p71m(unsigned 1 E, unsigned 1 RDY) EpulseGenerator1(unsigned 1 TRG_ONE = x, unsigned 1 CLK = __clock); // EDIF Import
+
+unsigned 1 SingleREG = 0;
+
+void main(void)
+{
+	do
+	{
+		par
+		{
+
+			/* Single Shot Pulse Making */
+			if(TRG_ONE_IN.an_Input == 1)
+			{
+				if(SingleREG == 0)
+				{
+					x = 1; // The sc2004c_egen_35p71m's TRG_ONE is set 1.
+					x = 0; // The sc2004c_egen_35p71m's TRG_ONE is set 0.
+					SingleREG = 1; 
+				}
+			}
+
+			else
+			{
+				SingleREG = 0;
+			}
+
+
+			/* EDIF module outputs assign */
+			y = EpulseGenerator1.E; // sc2004c_egen_35p71m's E outputs to the y.
+			z = EpulseGenerator1.RDY; // sc2004c_egen_35p71m's RDY outputs to the z.
+
+		}		  
+	}
+	while(1);
+
+}

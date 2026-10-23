@@ -1,0 +1,49 @@
+body{
+	color: #000;
+	background-color: #fff;
+	background-image: url("/wback.jpg");
+	margin-left: 1em;
+	margin-right: 1em;
+}
+
+a:link{color: #00F; text-decoration: none}
+
+table.wide{border-spacing: 20px 1px}
+td{text-align: center}
+
+p{text-indent: 1em}
+p.margin10{text-align: left; margin: 10px 10px}
+p.margin20{text-align: left; margin: 10px 20px}
+p.margin40{text-align: left; margin: 10px 40px}
+p.margin80{text-align: left; margin: 10px 80px}
+p.margin120{text-align: left; margin: 10px 120px}
+pre.code{border-style: solid; border-width: thin; border-color: #c0c0c0; background-color: #d0e0f0; overflow: visible; margin: 10px; padding: 10px; font-weight: 700}
+p.code{border-style: solid; border-width: thin; border-color: #c0c0c0; background-color: #d0e0f0; overflow: visible; margin: 10px; padding: 10px; font-weight: 700}
+
+   .red{color: #ff0000}
+.orange{color: #ff8500}
+code{font-weight: 700}
+
+img.margin10{margin: 10px 10px; vertical-align: middle}
+img.margin10L{margin: 10px 10px; float: left; vertical-align: middle}
+img.margin10R{margin: 10px 10px; float: right; vertical-align: middle}
+img.margin20{margin: 10px 20px; vertical-align: middle}
+img.margin20L{margin: 10px 20px; float: left; vertical-align: middle}
+img.margin20R{margin: 10px 20px; float: right; vertical-align: middle}
+img.margin40{margin: 10px 40px; vertical-align: middle}
+img.margin40L{margin: 10px 40px; float: left; vertical-align: middle}
+img.margin40R{margin: 10px 40px; float: right; vertical-align: middle}
+img.margin80{margin: 10px 80px; vertical-align: middle}
+img.margin80L{margin: 10px 80px; float: left; vertical-align: middle}
+img.margin80R{margin: 10px 80px; float: right; vertical-align: middle}
+img.margin120{margin: 10px 120px; vertical-align: middle}
+img.margin120L{margin: 10px 120px; float: left; vertical-align: middle}
+img.margin120R{margin: 10px 120px; float: right; vertical-align: middle}
+
+br.clear{clear: both}
+
+.center{text-align: center;}
+.left{text-align: left}
+.right{text-align: right}
+
+table.center{margin-left: auto; margin-right: auto}

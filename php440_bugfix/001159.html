@@ -1,0 +1,91 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [PHP-dev 1160] mb_encode_mimeheader() が正常に動作しない件について
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:php-dev%40php.gr.jp?Subject=%5BPHP-dev%201160%5D%20%3D%3Fiso-2022-jp%3Fb%3FbWJfZW5jb2RlX21pbWVoZWFkZXIoKSA%3D%3F%3D%0A%20%3D%3Fiso-2022-jp%3Fb%3FGyRCJCxANT5vJEtGMDpuJDckSiQkN28kSyREJCQkRhsoQg%3D%3D%3F%3D&In-Reply-To=">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <meta charset="utf-8">
+   <LINK REL="Previous"  HREF="001158.html">
+   <LINK REL="Next"  HREF="001160.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[PHP-dev 1160] mb_encode_mimeheader() が正常に動作しない件について</H1>
+    <B>komura</B>
+    <A HREF="mailto:php-dev%40php.gr.jp?Subject=%5BPHP-dev%201160%5D%20%3D%3Fiso-2022-jp%3Fb%3FbWJfZW5jb2RlX21pbWVoZWFkZXIoKSA%3D%3F%3D%0A%20%3D%3Fiso-2022-jp%3Fb%3FGyRCJCxANT5vJEtGMDpuJDckSiQkN28kSyREJCQkRhsoQg%3D%3D%3F%3D&In-Reply-To="
+       TITLE="[PHP-dev 1160] mb_encode_mimeheader() が正常に動作しない件について">komura ＠ ma9.seikyou.ne.jp
+       </A><BR>
+    <I>2005年 7月 16日 (土) 14:28:34 JST</I>
+    <P><UL>
+        <LI>前の記事 <A HREF="001158.html">[PHP-dev 1159] Re: foreachの挙動に関しまして
+</A></li>
+        <LI>次の記事 <A HREF="001160.html">[PHP-dev 1161] Re: mb_encode_mimeheader() が正常に動作しない件について
+</A></li>
+         <LI> <B>記事の並び順:</B> 
+              <a href="date.html#1159">[ 日付 ]</a>
+              <a href="thread.html#1159">[ スレッド ]</a>
+              <a href="subject.html#1159">[ 件名 ]</a>
+              <a href="author.html#1159">[ 著者 ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>komura です。
+
+PHP 4.4.0 で mb_encode_mimeheader() を使用すると件名が文字化けする件について
+ですが、少し調べてみました。
+
+おそらく、前の Patch で文字列に '?' '=' '_' が最初に含まれている場合は
+MIME エンコード処理を行うように変更したと思うのですが、以下の行で変数 c が
+日本語文字列場合、256 以上の値が返ってくるため、ASCII 文字列と認識してしまう
+ことがあるようです。
+
+	if (!qp_table[(c &amp; 0xff)]) { /* ordinary characters */
+
+c が 256 より小さい場合のみという条件を加えてテストした限りでは特に動作には
+問題なさそうです。
+
+	if (c &lt; 256 &amp;&amp; !qp_table[(c &amp; 0xff)]) { /* ordinary characters */
+
+PHP 5.0.x や PHP 5.1 のベータ版では確認はしていませんが、PHP 4.4.0 でテスト
+したPatch を添付しますので、もしよければどなたかテストしてみてください。
+Patch ではコメントの間違いと思われる部分も修正しています。
+
+
+別の話ですが、mbfilter.c には最初に charset=UTF-8 と書かれていますが、
+コメントは EUC-JP で書かれていますので、エディタによっては化けます。
+可能であれば、どちらかに統一して欲しいところです。
+
+-- 
+komura &lt;<A HREF="http://ns1.php.gr.jp/mailman/listinfo/php-dev">komura ＠ ma9.seikyou.ne.jp</A>&gt;
+-------------- next part --------------
+テキスト形式以外の添付ファイルを保管しました...
+ファイル名: mbfilter.c.patch
+型:         application/octet-stream
+サイズ:     1111 バイト
+説明:       無し
+URL:        <A HREF="http://ns1.php.gr.jp/pipermail/php-dev/attachments/20050716/69fd1639/mbfilter.c.obj">http://ns1.php.gr.jp/pipermail/php-dev/attachments/20050716/69fd1639/mbfilter.c.obj</A>
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>前の記事 <A HREF="001158.html">[PHP-dev 1159] Re: foreachの挙動に関しまして
+</A></li>
+	<LI>次の記事 <A HREF="001160.html">[PHP-dev 1161] Re: mb_encode_mimeheader() が正常に動作しない件について
+</A></li>
+         <LI> <B>記事の並び順:</B> 
+              <a href="date.html#1159">[ 日付 ]</a>
+              <a href="thread.html#1159">[ スレッド ]</a>
+              <a href="subject.html#1159">[ 件名 ]</a>
+              <a href="author.html#1159">[ 著者 ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://ns1.php.gr.jp/mailman/listinfo/php-dev">PHP-dev メーリングリストの案内
+</a><br>
+</body></html>

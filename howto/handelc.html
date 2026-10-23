@@ -1,0 +1,226 @@
+<!Doctype html Public "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<title>Handel-CとEDIFの相互利用 (Made by Susutawari)</title>
+<link rel="stylesheet" href="../susu.css" type="text/css">
+<link rev="Made" href="mailto:susu@susutawari.org">
+<link rel="contents" href="index.html">
+</head>
+<body>
+<basefont size="3">
+
+<h2>Handel-CとEDIFの相互利用</h2>
+<div align="center">
+<a href="DK2.png"><img src="DK2s.png" width="420" height="316" alt="DK2 Screen Shot"></a>
+</div>
+<br>
+<a href="http://www.celoxica.co.jp/" target="_top">Celoxica社</a>の<strong>Handel-C</strong>の中でEDIFモジュールをブラックボックスとして取り込んだり、また逆にHandel-Cで書いたモジュールをEDIFに変換する際に、他の言語や回路ツールでブラックボックスとして取り込めるようにするための方法です。これと<a href="viewdraw.html">ViewDraw (ePD DxDesinger) とHDLの相互利用</a>方法により、EDIFを介してViewDraw, HDL, Handel-Cの全てで相互利用（モジュール化とそのインターフェース）が可能です。
+
+<hr>
+
+解説内容は以下の２つです。
+<ol>
+<li><a href="#SECTION1">EDIFモジュールをHandel-C中で使う方法</a>
+<li><a href="#SECTION2">Handel-Cモジュールを他で取り込めるEDIFモジュールにする方法（まだ）</a>
+</ol>
+
+<div align="center">
+<strong>各ツールのバージョン</strong>
+<table summary="Tools Version" border="2">
+ <tr><th></th><th>製品名</th><th>バージョン</th></tr>
+ <tr><td rowspan="2">Handel-C 開発環境</td><td>DK</td><td>Ver.2.0 with SP2</td></tr>
+ <tr><td>Handel-C Compiler</td><td>Ver.3.2.2710（標準のDK2だと2701）</td></tr>
+ <tr><td>インプリメンテーションツール</td><td>XILINX ISE Foundation</td><td>5.2.03i</td></tr>
+</table>
+</div>
+
+<br>
+<br clear="all">
+<hr>
+
+<h3 id="SECTION1">1. EDIFモジュールをHandel-C中で使う方法</h3>
+<div align="center">
+<img src="EDIF_IN_HC.png" width="600" height="243" alt="EDIF in Handel-C">
+</div>
+<p>
+Handel-CとEDIFとのインターフェースには基本的に"interface"文を用います。
+EDIFモジュールを取り込む場合は、この"interface"を使ってEDIF中で定義されている
+ピン名とHandel-Cの中で使いたい名前を対応付けるだけです。ポイントはクロックの供給
+方法でしょうか・・
+</p>
+<h4>手順：</h4>
+<dl>
+ <dt><em>DKにて</em>
+ <dd><ol>
+      <li>EDIFモジュールを呼び出す側のHandel-Cのソースを作る
+      <li>interfaceの構文は、「interface EDIFモジュール名(EDIFモジュールからの出力ピン名) Handel-C中で扱うモジュールの名前(EDIFモジュールへの入力ピン名 = Handel-C中で扱う変数名);」である。入出力ピンが複数ある場合はそれぞれ","（カンマ）で区切って並べる
+      <li>EDIFモジュールを呼び出すHandel-Cの中で使っているクロック（set clock = external "XX"; など）を、そのままEDIFモジュールのCLK入力ピンに供給したい場合は、"interface"構文中で「unsigned 1 CLK = __clock」などとする。ここで"__clock"がカレントのクロックを指しており、例ではこれをEDIFモジュールの"CLK"という入力ピンと接続している
+      <hr>
+     </ol>
+ <dt><em>ISEにて</em>
+ <dd><ol start="16">
+      <li>ISEにて、「ファイル」-&gt;「新規プロジェクト」でプロジェクトを作成。ここで、"Design Flow"を「EDIF」にすること
+      <li>「プロジェクト」-&gt;「ソースの追加」で、対象となる「EDIFモジュールを用いた最上位のHandel-Cから生成したEDIFファイル」を追加
+      <li class="red">"Implement Design" のプロパティ中の "Translate Properties" にある "Macro Search Path" に、埋め込むEDIFモジュールのファイルのあるディレクトリを指定する
+      <li>インプリメンテーションを実行して完成
+     </ol>
+</dl>
+
+<p>
+<strong>例：</strong> ここでは<a href="/" target="_top">SUSUBOX</a>の一つで、キャラクタLCDドライバの一部の簡単なモジュールである"SC2004C_EGEN"（ViewDrawで記述されている）のEDIFファイル（<strong>sc2004c_egen_35p71m.edn</strong>）
+を<strong>"handelc_root.hcc"</strong>から呼び出してみます。<br>
+"sc2004c_egen_35p71m.edn"は28.58MHz以上〜35.71MHz未満のベースクロックで規定時間のパルスを生成するモジュールですが、この範囲外の周波数でも動作はするので、EDIFの呼び出しテストには問題ありません。
+</p>
+呼び出すEDIFモジュール
+<table summary="SC2004C_EGEN" border="3">
+<tr><td rowspan="6"><img src="SC2004C_EGEN_web.png" alt="Symbol of SC2004C_EGEN" width="240" height="158"></td>
+<td>名称</td><th>SC2004C_EGEN</th></tr>
+<tr><td>機能</td><td>キャラクタLCDドライバの一部で、TRG_ONE入力があると"E"からEnableパルスを出力する。</td></tr>
+<tr><td rowspan="2">データ・シート</td><td><a href="SDS_SC2004C_EGEN1_09J.pdf">SDS_SC2004C_EGEN1_09J.pdf</a></td></tr>
+<tr><td><a href="SDS_SC2004C_EGEN1_09J.ps">SDS_SC2004C_EGEN1_09J.ps</a></td></tr>
+<tr><td>EDIF</td><td><a href="sc2004c_egen_35p71m.edn">sc2004c_egen_35p71m.edn</a><br>EDIF2.0（Virtex, Virtex-E, Spartan2用）</td></tr>
+<tr><td>回路図</td><td><a href="sc2004c_egen_35p71m1.pdf">sc2004c_egen_35p71m1.pdf</a></td></tr>
+</table>
+<br>
+Handel-Cのサンプル・ソースファイル：<a href="handelc_root.hcc">handelc_root.hcc</a>
+<span class="orange"> ※ピン・アサイン（"Pxx"）は任意に置き換えてください。</span>
+<table summary="Sample Source1" border="3" align="center">
+<tr><td style="text-align: left">
+<pre>
+<code>
+set clock = external "P92"; // CLK Pin Assign
+
+unsigned 1 x = 0; // Internal Variable for "TRG_ONE"
+interface bus_in(unsigned 1 an_Input) TRG_ONE_IN() with {data={"P209"}}; // Input Pin Assign 
+
+unsigned 1 y; // Internal Variable for "E"
+unsigned 1 z; // Internal Variable for "RDY"
+interface bus_out() E_OUT(unsigned 1 out = y) with {data={"P217"}}; // Output Pin Assign
+interface bus_out() RDY_OUT(unsigned 1 out = z) with {data={"P216"}}; // Output Pin Assign
+
+interface sc2004c_egen_35p71m(unsigned 1 E, unsigned 1 RDY) EpulseGenerator1(unsigned 1 TRG_ONE = x, unsigned 1 CLK = __clock); // EDIF Import
+
+unsigned 1 SingleREG = 0;
+
+void main(void)
+{
+	do
+	{
+		par
+		{
+
+			/* Single Shot Pulse Making */
+			if(TRG_ONE_IN.an_Input == 1)
+			{
+				if(SingleREG == 0)
+				{
+					x = 1; // The sc2004c_egen_35p71m's TRG_ONE is set 1.
+					x = 0; // The sc2004c_egen_35p71m's TRG_ONE is set 0.
+					SingleREG = 1; 
+				}
+			}
+
+			else
+			{
+				SingleREG = 0;
+			}
+
+
+			/* EDIF module outputs assign */
+			y = EpulseGenerator1.E; // sc2004c_egen_35p71m's E outputs to the y.
+			z = EpulseGenerator1.RDY; // sc2004c_egen_35p71m's RDY outputs to the z.
+
+		}		  
+	}
+	while(1);
+
+}
+</code>
+</pre>
+</td></tr>
+</table>
+<br>
+一応Virtex-E(XCV300E-6PQ240C)にて動作確認済みですが、Handel-Cはまだほとんど使ったことがないので、基本的な間違いとかがあったらご指摘ください。^^;（コメントの英語がまちがってるとか・・）<br>
+シングル・ショット・パルスなどはこんな記述でいいのでしょうか・・？？<br>
+あ、外部からシングル・ショット・パルスを入力することを前提に、もっと単純に書くとmain()文内は下記のようになります。
+<table summary="Sample Source2" border="3" align="center">
+<tr><td style="text-align: left">
+<pre>
+<code>
+void main(void)
+{
+	do
+	{
+		par
+		{
+
+			x = TRG_ONE_IN.an_Input; // The TRG_ONE_IN outputs to sc2004c_egen_35p71m's TRG_ONE.
+
+			/* EDIF module outputs assign */
+			y = EpulseGenerator1.E; // sc2004c_egen_35p71m's E outputs to the y.
+			z = EpulseGenerator1.RDY; // sc2004c_egen_35p71m's RDY outputs to the z.
+
+		}		  
+	}
+	while(1);
+
+}
+</code>
+</pre>
+</td></tr>
+</table>
+<hr>
+
+<h3 id="SECTION2">2. Handel-Cモジュールを他で取り込めるEDIFモジュールにする方法（まだ）</h3>
+<div align="center">
+<img src="HC_TO_EDIF.png" width="600" height="259" alt="Handel-C to EDIF">
+</div>
+<p>
+こっちは基本的に"interface port"文でできるようです。問題はやはりベースクロックの外部入力方法（CLKピンの作り方）でしょう。
+</p>
+ヒント？
+<table summary="Sample Source3" border="3" align="center">
+<tr><td style="text-align: left">
+<pre>
+<code>
+interface port_in (unsigned 1 CLK_IN) ClkInputPort(); // Making a CLK Input Port named "CLK_IN".
+set clock = internal ClkInputPort.CLK_IN; // Using External Clock from ClkInputPort.
+
+interface port_in(unsigned 1 TRG_ONE) XXX(); // Making an Input Port named "TRG_ONE".
+interface port_out() YYY(unsigned 7 DataOut = DOUT); // Making a Output Port named "DOUT".
+</code>
+</pre>
+</td></tr>
+</table>
+<br>
+最初の行の"CLK_IN"のあとに"with {clockport = 1}"を入れるとか入れないとか・・？<br>
+未検証です。まちがってたらごめんなさい。^^;;
+<hr>
+<p align="right">ｂｙ すすたわり (2004.01.06)<br>(2004.01.16 更新)</p>
+
+<table summary="Back Button" border="4" align="center">
+<tr><td><a href="index.html">戻る</a></td></tr>
+</table>
+
+ご意見、ご感想などはこちらまで。
+<address>
+<a href="mailto:susu@susutawari.org">E-mail: susu@susutawari.org</a><br>
+</address>
+
+<hr>
+<div align="center">
+Copyright (C)2003-2004 N.Aibe. All Rights Reserved.
+</div>
+
+<a href="/"><img class="margin10R" src="/susulogo.png" width="88" height="31" alt="Made by Susutawari"></a>
+</body>
+</html>
+
+
+
+
+
+
+

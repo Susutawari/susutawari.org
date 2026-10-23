@@ -1,0 +1,11 @@
+--- language/japanese/xoopsmailerlocal.php	2006-07-27 09:17:18.000000000 +0900
++++ language/japanese/xoopsmailerlocal.php	2007-02-03 01:00:44.000894000 +0900
+@@ -127,7 +127,7 @@
+     }
+ 
+     function EncodeHeader ($str, $position = 'text', $force=false) {
+-        if (!preg_match('/^4\.4\.[01]([^0-9]+|$)/',PHP_VERSION)) {
++        if (false && !preg_match('/^4\.4\.[01]([^0-9]+|$)/',PHP_VERSION)) {
+             if (function_exists('mb_convert_encoding')) { //Use mb_string extension if exists.
+                 if ($this->needs_encode || $force) {
+                     $encoded = mb_convert_encoding($str, _CHARSET, mb_detect_encoding($str));

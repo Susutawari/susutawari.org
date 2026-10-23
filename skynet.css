@@ -1,0 +1,9 @@
+body{
+	color: #FFF;
+	background-color: #333;
+	background-image: url("http://www.bforc.co.jp/~susu/bg.gif");
+	margin-left: 1em;
+	margin-right: 1em;
+}
+
+A:link{color: #00F; text-decoration: none}
