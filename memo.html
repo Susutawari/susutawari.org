@@ -104,7 +104,7 @@ Last up date:
 <pre class="code">
 >patch xoopsmailerlocal.php < xoopsmailerlocal.php.patch
 </pre>
-<a href="http://xoopscube.jp/modules/xhnewbb/viewtopic.php?topic_id=4591&post_id=20680" class="deadlink" title="リンク切れ（2026-10-23 確認）。xoopscube.jp は TLS 失敗で到達不可。旧フォーラム記事の移転先無し">参考</a>,
+参考,
 </ul>
 
 <hr>
@@ -153,7 +153,7 @@ body_checks_size_limit = 20971520
 <br>
 conf.pl(./configure) の設定項目中の「4. General Options」中の「11. Allow server-side sorting」を"true"に変更する。ディフォルトだとPHPでソートするようになっているようで、この変更をするとInboxのアクセスがとても速くなる。これでやっと普通のメーラ並みのレスポンスになった。<br>
 動作速度が遅い（重い）場合の原因には他に、内部でのDNSの逆引きなどに失敗していることなどがあるらしい。<br>
-<a href="http://sanguine.jp/pipermail/squirrelmail-users/2003-February/001804.html" class="deadlink" title="リンク切れ（2026-10-23 確認）。sanguine.jp 消滅。同記事の別アーカイブ見つからず">参考1</a>.
+参考1.
 </ul>
 
 <hr>
@@ -161,7 +161,7 @@ conf.pl(./configure) の設定項目中の「4. General Options」中の「11. A
 <ul>
 <li><strong>SquirrelMailで、リプライするときの引用文の先頭に付く「On 日付 xxx wrote:」を英語に変更する方法</strong></li>
 <br>
-squirremail のインストールディレクトリにある /locale/ja_JP/LC_MESSAGES/squirrelmail.po の日付に関する部分を修正する。（修正後の <a href="squirrelmail.po" class="deadlink" title="リンク切れ（2026-10-23 確認）。旧サーバーにも無い">squirrelmail.po</a>）
+squirremail のインストールディレクトリにある /locale/ja_JP/LC_MESSAGES/squirrelmail.po の日付に関する部分を修正する。（修正後の squirrelmail.po）
 修正後、squirrelmail.po をコンパイルする。
 <pre class="code">
 >cd po
@@ -210,9 +210,9 @@ ex.
 上記で再起動できますが、cronは1分毎に/etc/crontabをチェックし、再読み込みするので再起動の必要はない。<br>
 <br>
 うまく動かない場合は、実行したいシェルの実行権が付いているか(755か)、シェルまでのパスがフルパスで記述されているかを確認。<br>
-<a href="http://www.express.nec.co.jp/linux/tech/knowledge/system/crond.html" class="deadlink" title="リンク切れ（2026-10-23 確認）。NEC の Linux 情報は jpn.nec.com/linux へ移行したが該当記事なし">参考1</a>,
+参考1,
 <a href="https://linuxjm.sourceforge.io/html/cron/man8/cron.8.html">参考2</a>,
-<a href="http://tsuttayo.sytes.net/crond/" class="deadlink" title="リンク切れ（2026-10-23 確認）。tsuttayo.sytes.net / tsuttayo.jpn.org とも DNS なし、移転先見つからず">参考3</a>.
+参考3.
 
 
 </ul>
@@ -234,7 +234,7 @@ require valid-user
 <li><strong>htpasswd -bc /home/username/.htpasswd USERNAME PASSWORD</strong> にて.htpasswd を作成。複数のアカウントを作る場合、二回目以降は -c オプションを付けない。</li>
 </ol>
 <a href="http://yang.amp.i.kyoto-u.ac.jp/~yyama/FreeBSD/www/htaccess-j.html">参考1</a>, 
-<a href="http://tsuttayo.sytes.net/apache/access/htaccess/" class="deadlink" title="リンク切れ（2026-10-23 確認）。tsuttayo.sytes.net / tsuttayo.jpn.org とも DNS なし、移転先見つからず">参考2</a>.
+参考2.
 </ul>
 
 <hr>
@@ -244,7 +244,7 @@ require valid-user
 <br>
 AWStats 6.5 日本語版のインストール<br>
 <ol>
-<li><a href="http://homepage2.nifty.com/hobbit/html/awstats.html" class="deadlink" title="リンク切れ（2026-10-23 確認）。nifty 閉鎖、同名記事「AWStatsをFreeBSDで動かす」は検索で見つからず">AWStatsをFreeBSDで動かす</a>よりダウンロード。</li>
+<li>AWStatsをFreeBSDで動かすよりダウンロード。</li>
 <li>/usr/local/etc/awstats などを作成し、アーカイブを展開。</li>
 <li>docs内の解説を参考にインストール開始。</li>
 <li>toolsディレクトリ内のawstats_configure.plを実行して各種設定を行う。</li>
@@ -315,7 +315,7 @@ system("/usr/local/etc/awstats/wwwroot/cgi-bin/awstats.pl -config=www.xxx.com -o
 <br>
 system("/usr/local/etc/awstats/wwwroot/cgi-bin/awstats.pl -config=www.xxx.com -output=errors404 -staticlinks -month=all > /public_html/www.xxx.com/awstats.www.xxx.com.errors404.html");<br>
 </p>
-<a href="http://homepage2.nifty.com/hobbit/html/awstats.html" class="deadlink" title="リンク切れ（2026-10-23 確認）。nifty 閉鎖、同名記事「AWStatsをFreeBSDで動かす」は検索で見つからず">参考1</a>,
+参考1,
 <a href="http://www.perfectsky.net/awstats/index.html">参考2</a>.
 </ul>
 
@@ -326,7 +326,7 @@ system("/usr/local/etc/awstats/wwwroot/cgi-bin/awstats.pl -config=www.xxx.com -o
 <br>
 table.center{margin-left: auto; margin-right: auto} とする。
 <br>
-<a href="http://www.anslasax.net/css-make/t-a/" class="deadlink" title="リンク切れ（2026-10-23 確認）。Cloudflare 530（origin 停止）。サイト名での検索結果なし">参考1</a>.
+参考1.
 </ul>
 
 <hr>
@@ -337,8 +337,8 @@ table.center{margin-left: auto; margin-right: auto} とする。
 メールボックスに入っているメールの総数が多くなると、PHPのメモリ容量制限で読めなくなっているぽい。<br>
 Apacheのエラーログに Allowed memory size of 8388608 bytes exhausted と出ている。<br>
 <strong>対策：</strong>php.ini中の memory_limit = 8M の値を増やす。<br>
-<a href="http://sanguine.jp/pipermail/squirrelmail-users/2002-December/000155.html" class="deadlink" title="リンク切れ（2026-10-23 確認）。sanguine.jp 消滅。同記事の別アーカイブ見つからず">参考1</a>,
-<a href="http://www.fkimura.com/squirrelmail1.html" class="deadlink" title="リンク切れ（2026-10-23 確認）。fkimura.com 接続拒否。著者の移転先サイト見つからず">参考2</a>.
+参考1,
+参考2.
 </ul>
 
 <hr>
@@ -404,7 +404,7 @@ define('XOOPS_DB_NAME', '新規MySQLデータベース名');<br>
 <ul>
 <li><strong>OpenSSHの更新</strong></li>
 <br>
-<a href="http://m.u.packet-workz.co.jp/doc/sshd.html" class="deadlink" title="リンク切れ（2026-10-23 確認）。ドメイン消滅、packet-workz の移転先は見つからず">参考</a><br>
+参考<br>
 <br>
 </ul>
 
@@ -445,7 +445,7 @@ mbox形式のばやい<br>
 <li><strong>IE対応のマルチアイコン・タイプのfavicon.icoの作成方法</strong></li>
 <br>
 1. 16x16 と 32x32 pixel の画像を作成。<br>
-2. <a href="http://www.towofu.net/soft/" target="_top" class="deadlink" title="リンク切れ（2026-10-23 確認）。サーバーは応答するが全頁 503 が続く。作者 towofu の移転先は見つからず">@icon変換</a> (Windows用ソフト)でfavicon.icoを作成。<br>
+2. @icon変換 (Windows用ソフト)でfavicon.icoを作成。<br>
 3. index.htmlのヘッダ中に、&lt;link rel=&quot;shortcut icon&quot; href=&quot;favicon.ico&quot;&gt; を追加。<br>
 <br>
 <a href="https://sonic64.com/2004-04-11.html" target="_top">参考1</a>
@@ -540,8 +540,8 @@ courier_imap_imapd_ssl_enable="YES" を追加。<br>
 また、postfixの設定(main.cf)で、home_mailbox = Maildir/ を設定する必要あり。<br>
 なお、各ユーザーのMaildirは最初にメールを受信したときに作られるが、maildirmakeコマンドでも生成可能。<br>
 <a href="http://www.smalltown.ne.jp/~usata/memo/mailserver.shtml" target="_top" class="deadlink" title="リンク切れ（2026-10-23 確認）。プロバイダ smalltown.ne.jp 閉鎖。作者 usata 氏の移転先は見つからず">参考1</a><br><span class="movedto">→ 移転先（推測）: <a href="https://www.scl.sds.hit-u.ac.jp/">https://www.scl.sds.hit-u.ac.jp/</a> 作者 小町守氏の現在のサイト。記事自体は現存しない</span>,
-<a href="http://mjm4u.net/oss/courier-imap/" target="_top" class="deadlink" title="リンク切れ（2026-10-23 確認）。ドメインは個人サイトとして存続するが courier-imap の文書は無い">参考2</a>,
-<a href="http://stada.jp/comp/imap4.html" target="_top" class="deadlink" title="リンク切れ（2026-10-23 確認）。stada.jp は建築設計事務所の別主体が使用、/comp/ は 404">参考3</a>
+参考2,
+参考3
 </ul>
 
 <hr>
@@ -567,8 +567,8 @@ imapsd : ALL : deny<br>
 inetd_enable="YES"<br>
 
 <br>
-<a href="http://hiiro-sou.hp.infoseek.co.jp/unix/tips/imap.html" target="_top" class="deadlink" title="リンク切れ（2026-10-23 確認）。infoseek 閉鎖、作者 hiiro-sou の移転先は見つからず">参考1</a>,
-<a href="http://www.sleepingbird.net/linux/webmail.shtml" target="_top" class="deadlink" title="リンク切れ（2026-10-23 確認）。ドメイン消滅。同名サイトの移転先は見つからず">参考2</a><br>
+参考1,
+参考2<br>
 </ul>
 
 <hr>
@@ -598,7 +598,7 @@ TransferLog /var/log/httpd-access.log<br>
 <br>
 ファイル中で 上記 ServerNameとServerAdminを書き換える。<br>
 <br>
-<a href="http://www.fkimura.com/apache11.html" class="deadlink" title="リンク切れ（2026-10-23 確認）。fkimura.com 接続拒否。著者の移転先サイト見つからず">参考1</a><br>
+参考1<br>
 </ul>
 
 <hr>
@@ -641,7 +641,7 @@ makeで外部のftpサーバに取りに行けない。<br>
 <font color="Red">>cvsup -g -L 2 /usr/local/etc/ports-supfile</font><br>
 にて更新開始。<br>
 <br>
-<a href="http://www.fkimura.com/cvsup1.html" class="deadlink" title="リンク切れ（2026-10-23 確認）。fkimura.com 接続拒否。著者の移転先サイト見つからず">参考1</a><br>
+参考1<br>
 <br>
 で、cvsup自体をportsで更新<br>
 >cd /usr/ports/net/cvsup<br>
@@ -678,7 +678,7 @@ php4-extensions のインストール<br>
 <br>
 ※PCREが入っていないと"Fatal error: Call to undefined function:
 preg_match() in /XXX/install/index.php on line 1254"と言われたり、XOOPSのインストール中でのDBチェック画面が真っ白になったりする。
-<a href="http://jp.xoops.org/modules/newbb/viewtopic.php?topic_id=5873&forum=15" class="deadlink" title="リンク切れ（2026-10-23 確認）。jp.xoops.org 消滅、フォーラム記事単位の移転先なし">参考1</a><br>
+参考1<br>
 <br>
 Apache2の設定ファイル /usr/local/etc/apache2/httpd.conf を修正<br>
 DirectoryIndex に index.php を追加。<br>
@@ -687,7 +687,7 @@ AddType application/x-httpd-php-source .phps<br>
 LoadModule php4_module libexec/apache/libphp4.so<br>
 をそれぞれ追加。<br>
 <br>
-<a href="http://www.fkimura.com/xoops0.html" class="deadlink" title="リンク切れ（2026-10-23 確認）。ドメインに接続できず。XOOPS 記事の作者の移転先も検索で見つからず">参考2</a>
+参考2
 </ul>
 
 <hr>
@@ -700,13 +700,13 @@ LoadModule php4_module libexec/apache/libphp4.so<br>
 >make WITH_APACHE2=yes WITH_CHARSET=ujis WITH_XCHARSET=all<br>
 >make install<br>
 <br>
-<a href="http://www.fkimura.com/xoops0.html" class="deadlink" title="リンク切れ（2026-10-23 確認）。ドメインに接続できず。XOOPS 記事の作者の移転先も検索で見つからず">参考1</a>
+参考1
 インストール後の設定<br>
 >cd /usr/local/bin<br>
 >./mysql_install_db --user=mysql (データベースの作成)<br>
 mysqlの起動<br>
 >cd /usr/local/etc/rc.d<br>
-<del><a href="mysql-server.sh" class="deadlink" title="リンク切れ（2026-10-23 確認）。旧サーバーにも無い">mysql-server.sh</a>に修正(: ${mysql_enable="YES"}にするだけ)</del><br>
+<del>mysql-server.shに修正(: ${mysql_enable="YES"}にするだけ)</del><br>
 /etc/rc.conf に mysql_enable="YES" を追加。<br>
 <font color="Red">>./mysql-server.sh start</font><br>
 >mysqladmin -u root password XXX<br>
@@ -810,7 +810,7 @@ dviout付属のcreatebbコマンドを使う。<br>
 bbファイルが自動生成され、eps/pdf の使い分けが容易に行える。<br>
 <a href="https://texwiki.texjp.org/?PDF%E3%81%AE%E4%BD%9C%E3%82%8A%E6%96%B9" target="_top">参考1</a>,
 <a href="https://texwiki.texjp.org/?LaTeX%E5%85%A5%E9%96%80%2F%E5%9B%B3%E8%A1%A8" target="_top">参考2</a>,
-<a href="http://pinna.cside4.jp/tips/latex/dvipdfm.html" target="_top" class="deadlink" title="リンク切れ（2026-10-23 確認）。cside 閉鎖、pinna の dvipdfm 記事の移転先は見つからず">参考3</a>,
+参考3,
 <a href="https://iir.ynu.ac.jp/maeda/comp/pdftips.html" target="_top">参考4</a>
 </ul>
 
